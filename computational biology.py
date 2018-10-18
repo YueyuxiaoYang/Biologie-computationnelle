@@ -103,15 +103,20 @@ class Genome:
             
         genome_all_posi = range(1,1+self.genome_len)
         modifible = list(set(genome_all_posi)-set(untouchble))
-            
-        return modifible
+        r_position = np.random.choice(modifible)                
+        
+        return r_position
         #print untouchble
 
 gn1 = Genome()
-gn1.gene_list = gene_list[1]
+gn1.gene_list=gene_list
+#gn1.gene_list.append(gene_list[1])
 
-           
-    
+# call class func is 2 times slower 
+a = []
+for i in range(10000):
+    #a.append(gn1.select_modify_position())
+    a.append(np.random.choice(range(30000)))
     
     
     
