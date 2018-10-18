@@ -118,6 +118,30 @@ for i in range(10000):
     #a.append(gn1.select_modify_position())
     a.append(np.random.choice(range(30000)))
     
+# test Bio-python draw genome
+from Bio.SeqFeature import SeqFeature, FeatureLocation
+from Bio.Graphics import GenomeDiagram
+from reportlab.lib.units import cm
+def draw_genome(g_list):
     
+    my_seq_feature = SeqFeature(FeatureLocation(50,100),strand=+1)
+    gdd = GenomeDiagram.Diagram('Test Diagram')
+    gdt_features = gdd.new_track(1, greytrack=False) 
+    gds_features = gdt_features.new_set()
+    #Add three features to show the strand options,
+    for g in g_list:
+        feature = SeqFeature(FeatureLocation(g.start, g.end), strand=g.orientation)
+        gds_features.add_feature(feature, name='gene'+str(g.id), label=True) #care for name
     
+    feature = SeqFeature(FeatureLocation(1, 10))
+    gds_features.add_feature(feature,color='red',label=True,name='start position')
+
+    # use feature _set   
     
+    gdd.draw(format="circular", circular=True,circle_core=0.7, pagesize=(20*cm,20*cm),
+             start=0, end=30000) # careful for the length of genome
+    gdd.write("GD_labels_default.pdf", "pdf")
+
+draw_genome(gene_list[1:5])
+  
+  
