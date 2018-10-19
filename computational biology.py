@@ -95,6 +95,7 @@ class Genome:
            r_position = self.select_modify_position()
         else:
            r_position = position
+        print "insert position: "+str(r_position)
         # find all genes after r_position, every gene + insert_len
         genes_to_modify = [g for g in self.gene_list if g.start > r_position]
         for g in genes_to_modify:
@@ -113,14 +114,18 @@ class Genome:
        '''
         if position == None:
            r_position = self.select_modify_position() #!!! not rubust need to change
+           print "delete position: "+str(r_position)
+           
         else:
            r_position = position
+        
         # find all genes after r_position, every gene - delete_len
         genes_to_modify = [g for g in self.gene_list if g.start > r_position]   
         for g in genes_to_modify:
             g.start = g.start - delete_len
             g.end = g.end - delete_len
-          
+        
+        self.genome_len -= delete_len
        
           
     def select_modify_position(self):
@@ -137,14 +142,14 @@ class Genome:
         genome_all_posi = range(1,1+self.genome_len)
         modifible = list(set(genome_all_posi)-set(untouchble))
         r_position = np.random.choice(modifible)                
-        
+            
         return r_position
         #print untouchble
 
 gn1 = Genome()
 gn1.gene_list=gene_list
-gn1.insert(500,6000)
-gn1.delete(900,5000)
+gn1.insert(insert_len=6000)
+gn1.delete(delete_len=3000)
 
 #gn1.gene_list.append(gene_list[1])
 
@@ -158,8 +163,10 @@ for i in range(10000):
 from Bio.SeqFeature import SeqFeature, FeatureLocation
 from Bio.Graphics import GenomeDiagram
 from reportlab.lib.units import cm
-def draw_genome(g_list,p_list):
+def draw_genome(genome):
     
+    g_list = genome.gene_list
+    p_list = genome.prot_posi
     gdd = GenomeDiagram.Diagram('Test Diagram')
     gdt_features = gdd.new_track(1, greytrack=False) 
     gds_features = gdt_features.new_set()
@@ -175,11 +182,11 @@ def draw_genome(g_list,p_list):
     # use feature _set   
     
     gdd.draw(format="circular", circular=True,circle_core=0.7, pagesize=(20*cm,20*cm),
-             start=0, end=30000) # careful for the length of genome
+             start=1, end=genome.genome_len) # careful for the length of genome
     gdd.write("GD_labels_default.pdf", "pdf")
 
 prot_posi = [1,3001,6001,9001,12001,15001,18001,21001,24001,27001]
     
-draw_genome(gn1.gene_list,gn1.prot_posi)
+draw_genome(gn1)
   
   
