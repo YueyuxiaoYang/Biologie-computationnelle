@@ -15,7 +15,7 @@ lines = data.readlines()
 genes = []
 for l in lines:
     genes.append(l.split())
-    
+data.close()
 genes = genes[5:-1]
 # save genes in a list [class_gene, ....]
 gene_list = [] # data structure for saving initial genome
@@ -29,6 +29,7 @@ for g in genes:
     else:
         a.orientation = -1
     gene_list.append(a)
+
 
 # check genome
 for g in gene_list:
@@ -71,26 +72,57 @@ class Genome:
             rate (float): the prob. ratio between insertion/deletion and inversion.
             generation (int): number of generations.
             genome_len(int): in the first generation length=30000
+            prot_posi(int list): list of protein position,with defaut value
     '''
     def __init__(self):
         # each gene is a list [gene_id, start position, end positon, orientation]
         self.gene_list = []
         self.change_rate = 0.5
         self.generation = 0
+        # defaut value is according to the TP 
         self.genome_len = 30000
+        self.prot_posi = [1,3001,6001,9001,12001,15001,18001,21001,24001,27001]
     
-    def insert(self, position=None,insert_len=1):
-       '''insert a sequence in the genome
+    def insert(self, position=None,insert_len=60):
+        '''insert a sequence in the genome
        
            Arguments:
-               position (int/int list): insert position
-               seq (?): sequence to insert
-               insert_len (int): the length of insertion
+               position (int/int list): insert position, defaut random choose
+               insert_len (int): the length of insertion, defaut=60
        '''
        # if  there is no input position, random choose one 
-       if position == None:
-           pass
-           #position = 
+        if position == None:
+           r_position = self.select_modify_position()
+        else:
+           r_position = position
+        # find all genes after r_position, every gene + insert_len
+        genes_to_modify = [g for g in self.gene_list if g.start > r_position]
+        for g in genes_to_modify:
+            g.start = g.start + insert_len
+            g.end = g.end + insert_len
+        
+        #genome_len + insert_len
+        self.genome_len += insert_len
+    
+    def delete(self, position=None, delete_len=60):
+        '''delete a sequence in the genome
+       
+           Arguments:
+               position (int): delete position, defaut random choose
+               delete_len (int): the length of deletion, defaut=60
+       '''
+        if position == None:
+           r_position = self.select_modify_position() #!!! not rubust need to change
+        else:
+           r_position = position
+        # find all genes after r_position, every gene - delete_len
+        genes_to_modify = [g for g in self.gene_list if g.start > r_position]   
+        for g in genes_to_modify:
+            g.start = g.start - delete_len
+            g.end = g.end - delete_len
+          
+       
+          
     def select_modify_position(self):
         ''' randomly select a position can be modify
             
@@ -98,6 +130,7 @@ class Genome:
         '''
         # identify the positions we can not touch
         untouchble = []
+        # nothing can be insert inside a gene
         for g in self.gene_list:
             untouchble+=range(g.start,g.start+g.length*g.orientation,g.orientation)
             
@@ -110,6 +143,9 @@ class Genome:
 
 gn1 = Genome()
 gn1.gene_list=gene_list
+gn1.insert(500,6000)
+gn1.delete(900,5000)
+
 #gn1.gene_list.append(gene_list[1])
 
 # call class func is 2 times slower 
@@ -118,13 +154,12 @@ for i in range(10000):
     #a.append(gn1.select_modify_position())
     a.append(np.random.choice(range(30000)))
     
-# test Bio-python draw genome
+# Bio-python draw genome
 from Bio.SeqFeature import SeqFeature, FeatureLocation
 from Bio.Graphics import GenomeDiagram
 from reportlab.lib.units import cm
-def draw_genome(g_list):
+def draw_genome(g_list,p_list):
     
-    my_seq_feature = SeqFeature(FeatureLocation(50,100),strand=+1)
     gdd = GenomeDiagram.Diagram('Test Diagram')
     gdt_features = gdd.new_track(1, greytrack=False) 
     gds_features = gdt_features.new_set()
@@ -133,15 +168,18 @@ def draw_genome(g_list):
         feature = SeqFeature(FeatureLocation(g.start, g.end), strand=g.orientation)
         gds_features.add_feature(feature, name='gene'+str(g.id), label=True) #care for name
     
-    feature = SeqFeature(FeatureLocation(1, 10))
-    gds_features.add_feature(feature,color='red',label=True,name='start position')
-
+    for p in p_list:
+        feature = SeqFeature(FeatureLocation(p, p+10))
+        gds_features.add_feature(feature,color='red',label=True,name='Protein position')
+    
     # use feature _set   
     
     gdd.draw(format="circular", circular=True,circle_core=0.7, pagesize=(20*cm,20*cm),
              start=0, end=30000) # careful for the length of genome
     gdd.write("GD_labels_default.pdf", "pdf")
 
-draw_genome(gene_list[1:5])
+prot_posi = [1,3001,6001,9001,12001,15001,18001,21001,24001,27001]
+    
+draw_genome(gn1.gene_list,gn1.prot_posi)
   
   
