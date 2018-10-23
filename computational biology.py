@@ -176,7 +176,7 @@ def draw_genome(genome):
         gds_features.add_feature(feature, name='gene'+str(g.id), label=True) #care for name
     
     for p in p_list:
-        feature = SeqFeature(FeatureLocation(p, p+10))
+        feature = SeqFeature(FeatureLocation(p, p+10))                                  
         gds_features.add_feature(feature,color='red',label=True,name='Protein position')
     
     # use feature _set   

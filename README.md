@@ -1,12 +1,14 @@
 # Biologie-computationnelle
 Projet Sam Mayer
 
-Week1: 
-1.  input data 
-2.  framework of genome
-3.  rules of genome modification
-4.  visualize the genome
+## Week2: 
+1.  insertion/deletion
+2.  inversion
+3.  simulation program
 
-Problems:
-1.  type of insertion? it is a string or just length.
-2.  should consider protein site
+## Problems:
+1.  deal with -1/backward gene
+2.  should consider protein site in insertion/deletion
+3.  randomly select position considering gene and protein site
+
+
