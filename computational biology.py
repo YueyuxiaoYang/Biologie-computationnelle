@@ -7,6 +7,34 @@ Created on Fri Oct 12 15:28:49 2018
 
 import numpy as np
 
+#----------------------------
+
+class gene:
+    '''gene is a data structure for a gene
+    
+        Attributes:
+            id (int): gene's id or name, to distinguish genes.
+            start (int): start position.
+            end (int): end position.
+            orientation (bool):  '+':1, '-':-1.
+            length (int): in this project length is a constant=1000.
+    
+    '''
+    def __init__(self):
+         # define defaut value
+        self.id = 0
+        self.start = -1 # start position should be between 1 and 30000
+        self.end = 0 # end position should be [1:30000]
+        self.orientation = 0 # '+':1, '-':0
+        self.length = 1000 # length of the gene is 1000 by defaut,and it is a constant 
+    def display(self):
+        '''
+            display all Attributes of a gene
+        '''
+        print self.__dict__
+                
+
+
 '''
 -------Input data----------
 '''
@@ -36,32 +64,6 @@ for g in gene_list:
     g.display()
 
 
-#----------------------------
-
-class gene:
-    '''gene is a data structure for a gene
-    
-        Attributes:
-            id (int): gene's id or name, to distinguish genes.
-            start (int): start position.
-            end (int): end position.
-            orientation (bool):  '+':1, '-':-1.
-            length (int): in this project length is a constant=1000.
-    
-    '''
-    def __init__(self):
-         # define defaut value
-        self.id = 0
-        self.start = -1 # start position should be between 1 and 30000
-        self.end = 0 # end position should be [1:30000]
-        self.orientation = 0 # '+':1, '-':0
-        self.length = 1000 # length of the gene is 1000 by defaut,and it is a constant 
-    def display(self):
-        '''
-            display all Attributes of a gene
-        '''
-        print self.__dict__
-                
 
 
 class Genome:
