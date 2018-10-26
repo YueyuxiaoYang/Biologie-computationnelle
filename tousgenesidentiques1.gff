@@ -1,0 +1,15 @@
+##gff-version 3
+#!gff-spec-version 1.20
+#!processor NCBI annotwriter
+##sequence-region tousgenesidentiques 1 33000
+tousgenesidentiques	RefSeq	region	1	33000	.	+	.	ID=id0;Name=tousgenesidentiques
+tousgenesidentiques	RefSeq	region	1001	2000	.	1	.	ID=g1;Name=g1
+tousgenesidentiques	RefSeq	region	4001	5000	.	1	.	ID=g1;Name=g2
+tousgenesidentiques	RefSeq	region	13001	14000	.	1	.	ID=g1;Name=g3
+tousgenesidentiques	RefSeq	region	16001	17000	.	1	.	ID=g1;Name=g4
+tousgenesidentiques	RefSeq	region	19001	20000	.	1	.	ID=g1;Name=g5
+tousgenesidentiques	RefSeq	region	22001	23000	.	1	.	ID=g1;Name=g6
+tousgenesidentiques	RefSeq	region	25001	26000	.	1	.	ID=g1;Name=g7
+tousgenesidentiques	RefSeq	region	28001	29000	.	1	.	ID=g1;Name=g8
+tousgenesidentiques	RefSeq	region	31001	32000	.	1	.	ID=g1;Name=g9
+tousgenesidentiques	RefSeq	region	31001	32000	.	1	.	ID=g1;Name=g10
