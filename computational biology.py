@@ -7,33 +7,7 @@ Created on Fri Oct 12 15:28:49 2018
 
 import numpy as np
 
-'''
--------Input data----------
-'''
-data  = open("tousgenesidentiques.gff", 'r')
-lines = data.readlines()
-genes = []
-for l in lines:
-    genes.append(l.split())
-data.close()
-genes = genes[5:-1]
-# save genes in a list [class_gene, ....]
-gene_list = [] # data structure for saving initial genome
-for g in genes:
-    a = gene()
-    a.id = int(g[-1][12:])
-    a.start = int(g[3])
-    a.end = int(g[4])
-    if  g[-3] == '+':
-        a.orientation = 1
-    else:
-        a.orientation = -1
-    gene_list.append(a)
 
-
-# check genome
-for g in gene_list:
-    g.display()
 
 
 #----------------------------
@@ -142,24 +116,10 @@ class Genome:
         genome_all_posi = range(1,1+self.genome_len)
         modifible = list(set(genome_all_posi)-set(untouchble))
         r_position = np.random.choice(modifible)                
-            
+                            
         return r_position
         #print untouchble
 
-gn1 = Genome()
-gn1.gene_list=gene_list
-gn1.insert(insert_len=6000)
-gn1.delete(delete_len=3000)
-
-#gn1.gene_list.append(gene_list[1])
-
-# call class func is 2 times slower 
-a = []
-for i in range(10000):
-    #a.append(gn1.select_modify_position())
-    a.append(np.random.choice(range(30000)))
-    
-# Bio-python draw genome
 from Bio.SeqFeature import SeqFeature, FeatureLocation
 from Bio.Graphics import GenomeDiagram
 from reportlab.lib.units import cm
@@ -185,8 +145,52 @@ def draw_genome(genome):
              start=1, end=genome.genome_len) # careful for the length of genome
     gdd.write("GD_labels_default.pdf", "pdf")
 
-prot_posi = [1,3001,6001,9001,12001,15001,18001,21001,24001,27001]
+
+
+# check genome
+'''
+for g in gene_list:
+    g.display()
+'''
+if __name__ == "__main__":    
+    '''
+    -------Input data----------
+    '''
+    data  = open("tousgenesidentiques.gff", 'r')
+    lines = data.readlines()
+    genes = []
+    for l in lines:
+        genes.append(l.split())
+    data.close()
+    genes = genes[5:-1]
+    # save genes in a list [class_gene, ....]
+    gene_list = [] # data structure for saving initial genome
+    for g in genes:
+        a = gene()
+        a.id = int(g[-1][12:])
+        a.start = int(g[3])
+        a.end = int(g[4])
+        if  g[-3] == '+':
+            a.orientation = 1
+        else:
+            a.orientation = -1
+        gene_list.append(a)    
     
-draw_genome(gn1)
-  
+    gn1 = Genome()
+    gn1.gene_list=gene_list
+    gn1.insert(insert_len=6000)
+    gn1.delete(delete_len=3000)
+    
+    #gn1.gene_list.append(gene_list[1])
+    
+    # call class func is 2 times slower 
+    
+        
+    # Bio-python draw genome
+    
+    
+    prot_posi = [1,3001,6001,9001,12001,15001,18001,21001,24001,27001]
+        
+    draw_genome(gn1)
+
   
