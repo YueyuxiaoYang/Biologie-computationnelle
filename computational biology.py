@@ -178,8 +178,8 @@ if __name__ == "__main__":
     
     gn1 = Genome()
     gn1.gene_list=gene_list
-    gn1.insert(insert_len=6000)
-    gn1.delete(delete_len=3000)
+    gn1.insert(position=1,insert_len=6000)
+    gn1.delete(position=8000,delete_len=3000)
     
     #gn1.gene_list.append(gene_list[1])
     
