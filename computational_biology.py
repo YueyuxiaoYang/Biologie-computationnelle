@@ -7,10 +7,15 @@ Created on Fri Oct 12 15:28:49 2018
 
 import numpy as np
 import sys
+import matplotlib.pyplot as plt
+
+''' if you wan to import this file 
+
 sys.path
 # add the path of this file in sys so as to import it
 sys.path.append('/home/yyang1/Bureau/Biologie-computationnelle') 
-
+import computational_biology as cb
+'''
 
 
 #----------------------------
@@ -114,7 +119,7 @@ class Genome:
         untouchble = []
         # nothing can be insert inside a gene
         for g in self.gene_list:
-            untouchble+=range(g.start,g.end)
+            untouchble+=range(g.start,g.end+1)
             
         genome_all_posi = range(1,1+self.genome_len)
         modifible = list(set(genome_all_posi)-set(untouchble))
@@ -257,8 +262,44 @@ def check_choose_position(gn):
     '''
     g_list = gn.gene_list
     gene_range = [(g.start,g.end) for g in g_list]
-    print(gene_range)    
-
+    untouchble = []
+    for r in gene_range:
+        untouchble += range(r[0],r[1]+1)
+    '''
+    # test select_modify_position_inversion()
+    test_position = []
+    error = []
+    for i in range(10000):        
+        p = gn.select_modify_position_insert()
+        #test_position.append(p)
+        if  p in untouchble:
+            error.append(p)
+    # plt.hist(test_position)
+    '''
+   
+    '''
+    # test select_modify_position_inversion()
+    test_position2 = []
+    error2 = []
+    for i in range(10000):        
+        p = gn.select_modify_position_delete(60)
+        #test_position2.append(p)
+        if  p in untouchble:
+            error2.append(p)
+    return error
+    # plt.hist(test_position2)
+    '''
+   
+    test_position3 = []
+    error3 = []
+    for i in range(1000):        
+        p = gn.select_modify_position_inversion()
+        #test_position3.append(p)
+        if  p[0] in untouchble or p[1] in untouchble:
+            error3.append(p)
+    return error3,test_position3
+    
+        
 if __name__ == "__main__":    
     '''
     -------Input data----------
