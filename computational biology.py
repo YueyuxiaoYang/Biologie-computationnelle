@@ -122,8 +122,9 @@ class Genome:
     def select_modify_position_delete(self,delete_len):
         ''' randomly select a position can be modify
             
-            Return a position in the Genome is modifible, constrain: cannot 
-            delete position - delete_len not in the gene
+            Return a position in the Genome is modifible, 
+            constrain:  
+                delete position - delete_len not in the gene
         '''
         # identify the positions we can not touch
         untouchble = []
@@ -133,23 +134,36 @@ class Genome:
         genome_all_posi = list(range(1+delete_len,1+self.genome_len))
         modifible = list(set(genome_all_posi)-set(untouchble))
         r_position = np.random.choice(modifible)   
-        return r_position             
+        return r_position
+    def select_modify_position_inversion(self):
+        ''' randomly select a position can be modify
+            
+            Return 2 positions in the Genome is modifible
+        '''
+        # identify the positions we can not touch
+        untouchble = []
+        # delete_posi - delete_len not in the gene
+        for g in self.gene_list:
+            untouchble+=range(g.start,g.end+1)
+        genome_all_posi = list(range(1,1+self.genome_len))
+        modifible = list(set(genome_all_posi)-set(untouchble))
+        r_positions = np.random.choice(modifible,size=2,replace=False)   
+        return sorted(r_positions)
 
     def inversion(self, position1= None, position2=None): 
         '''
+            input:
+                inversion between position1 and position2
             rebust: 1. gene_len is a constant(l=1000)
         '''
         # Choose 2 position, position1<postiton2
-        if position1 == None:
-            r_position1 = self.select_modify_position() #!!! not rubust need to change
+        if position1 == None or position2 == None:
+            r_position1,r_position2 = self.select_modify_position_inversion() #!!! not rubust need to change
             #print "delete position: "+str(r_position1)   
         else:
+            # input position1/2 is for testing the code
             r_position1 = position1
-        if position2 == None:
-            r_position2 = self.select_modify_position() #!!! not rubust need to change
-            #print "delete position: "+str(r_position2)   
-        else:
-            r_position2 = position2   
+            r_position2 = position2
         
         # inversion between r_posi1 and r_posi2
         Number_gene=0
@@ -264,11 +278,11 @@ if __name__ == "__main__":
     # ------ show genome------
     for g in gn1.gene_list:
         g.display()
+    gn1.inversion(50, 16000)
     
-    gn1.insert(insert_len=6000)
-    for g in gn1.gene_list:
-        g.display()
-    gn1.delete(delete_len=3000)
+    #gn1.insert(insert_len=6000)
+    
+    #gn1.delete(delete_len=3000)
     
     #gn1.gene_list.append(gene_list[1])
     
