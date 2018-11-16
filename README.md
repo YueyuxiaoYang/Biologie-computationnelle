@@ -8,8 +8,8 @@ https://github.com/bilalelhoudaigui/TCDS-v2
 
 ## mise à jour du 17 novembre 
 ## à faire 
--->  modifier les différents fichiers de sortie après les mises à jour 
--->  régler les problèmes de barrières : vérifier que l'on n'a pas de barrière dans un gène lorsque l'on réalise inversion deletion 
--->  lancer les simulations
--->  commencer à faire le rapport 
+1.  modifier les différents fichiers de sortie après les mises à jour 
+2.  régler les problèmes de barrières(check) : vérifier que l'on n'a pas de barrière dans un gène lorsque l'on réalise inversion deletion
+3.  lancer les simulations
+4.  commencer à faire le rapport 
   
