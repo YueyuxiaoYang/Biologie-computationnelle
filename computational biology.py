@@ -6,7 +6,10 @@ Created on Fri Oct 12 15:28:49 2018
 """
 
 import numpy as np
-
+import sys
+sys.path
+# add the path of this file in sys so as to import it
+sys.path.append('/home/yyang1/Bureau/Biologie-computationnelle') 
 
 
 
@@ -245,6 +248,17 @@ def draw_genome(genome):
 for g in gene_list:
     g.display()
 '''
+
+def check_choose_position(gn):
+    '''choose postions_to_modify many times to see if they are inside the gene
+       
+        Arguments:
+           gn(Genmoe): Genome instance
+    '''
+    g_list = gn.gene_list
+    gene_range = [(g.start,g.end) for g in g_list]
+    print(gene_range)    
+
 if __name__ == "__main__":    
     '''
     -------Input data----------
