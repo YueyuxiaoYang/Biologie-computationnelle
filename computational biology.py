@@ -34,7 +34,7 @@ class gene:
         '''
             display all Attributes of a gene
         '''
-        print self.__dict__
+        print (self.__dict__)
                 
 
 
@@ -66,10 +66,10 @@ class Genome:
        '''
        # if  there is no input position, random choose one 
         if position == None:
-           r_position = self.select_modify_position()
+           r_position = self.select_modify_position_insert()
         else:
            r_position = position
-        print "insert position: "+str(r_position)
+        print ("insert position: "+str(r_position))
         # find all genes after r_position, every gene + insert_len
         genes_to_modify = [g for g in self.gene_list if g.start > r_position]
         for g in genes_to_modify:
@@ -87,8 +87,8 @@ class Genome:
                delete_len (int): the length of deletion, defaut=60
        '''
         if position == None:
-           r_position = self.select_modify_position() #!!! not rubust need to change
-           print "delete position: "+str(r_position)
+           r_position = self.select_modify_position_delete(delete_len) #!!! not rubust need to change
+           print ("delete position: "+str(r_position))
            
         else:
            r_position = position
@@ -102,7 +102,7 @@ class Genome:
         self.genome_len -= delete_len
        
           
-    def select_modify_position(self):
+    def select_modify_position_insert(self):
         ''' randomly select a position can be modify
             
             Return a position in the Genome is modifible
@@ -111,7 +111,7 @@ class Genome:
         untouchble = []
         # nothing can be insert inside a gene
         for g in self.gene_list:
-            untouchble+=range(g.start,g.start+g.length*g.orientation,g.orientation)
+            untouchble+=range(g.start,g.end)
             
         genome_all_posi = range(1,1+self.genome_len)
         modifible = list(set(genome_all_posi)-set(untouchble))
@@ -119,6 +119,85 @@ class Genome:
                             
         return r_position
         #print untouchble
+    def select_modify_position_delete(self,delete_len):
+        ''' randomly select a position can be modify
+            
+            Return a position in the Genome is modifible, constrain: cannot 
+            delete position - delete_len not in the gene
+        '''
+        # identify the positions we can not touch
+        untouchble = []
+        # delete_posi - delete_len not in the gene
+        for g in self.gene_list:
+            untouchble+=range(g.start,g.end+delete_len+1)
+        genome_all_posi = list(range(1+delete_len,1+self.genome_len))
+        modifible = list(set(genome_all_posi)-set(untouchble))
+        r_position = np.random.choice(modifible)   
+        return r_position             
+
+    def inversion(self, position1= None, position2=None): 
+        '''
+            rebust: 1. gene_len is a constant(l=1000)
+        '''
+        # Choose 2 position, position1<postiton2
+        if position1 == None:
+            r_position1 = self.select_modify_position() #!!! not rubust need to change
+            #print "delete position: "+str(r_position1)   
+        else:
+            r_position1 = position1
+        if position2 == None:
+            r_position2 = self.select_modify_position() #!!! not rubust need to change
+            #print "delete position: "+str(r_position2)   
+        else:
+            r_position2 = position2   
+        
+        # inversion between r_posi1 and r_posi2
+        Number_gene=0
+        start_gene=[]
+        end_gene=[]
+        name_gene=[]
+        orientation=[]
+        for g in self.gene_list:
+            if (r_position1 <= g.start and r_position2>= g.end) : 
+                Number_gene = Number_gene +1
+                start_gene.append(g.start)
+                end_gene.append(g.end)
+                name_gene.append(g.id)
+                orientation.append(g.orientation)
+                
+        start_gene_i=min(start_gene)
+        end_gene_i=max(end_gene)
+        dist_gene=[]
+        n=len(name_gene)#nombre de gene 
+        l=1000 # taille d'un gene 
+        for i in range(1,n):
+        		dist_gene.append(start_gene[i]-end_gene[i-1])
+        	#inverser les index des nouveaux genes 
+        name_gene = name_gene[::-1]
+        dist_gene =dist_gene[::-1]
+        	#ecrire la nouvelle premiere position (start et end) 
+        start_gene[0]= r_position1 + r_position2- end_gene_i
+        end_gene[0]= start_gene[0] + l
+        orientation[0]=  orientation[0]*(-1)
+        for i in range(1,n): 
+        		start_gene[i]= end_gene[i-1] + dist_gene[i-1]
+        		end_gene[i]= start_gene[i]+l 
+        		orientation[i]=  orientation[i]*(-1)
+        # --- end inversion ----
+        
+        gene_to_modify = list(zip(name_gene, start_gene, end_gene,orientation))
+        gene_to_modify.sort(key= lambda g:g[0])
+        
+        for i,g in enumerate([gn for gn in self.gene_list if gn.id in name_gene]):
+            g.start = gene_to_modify[i][1]
+            g.end = gene_to_modify[i][2]
+            g.orientation = gene_to_modify[i][3]
+        		
+        return name_gene, start_gene, end_gene , orientation
+        
+
+'''
+We can not draw genome in 5Bim's computer
 
 from Bio.SeqFeature import SeqFeature, FeatureLocation
 from Bio.Graphics import GenomeDiagram
@@ -144,7 +223,7 @@ def draw_genome(genome):
     gdd.draw(format="circular", circular=True,circle_core=0.7, pagesize=(20*cm,20*cm),
              start=1, end=genome.genome_len) # careful for the length of genome
     gdd.write("GD_labels_default.pdf", "pdf")
-
+'''
 
 
 # check genome
@@ -176,21 +255,27 @@ if __name__ == "__main__":
             a.orientation = -1
         gene_list.append(a)    
     
+
+        
+    # ----- do some modification
     gn1 = Genome()
     gn1.gene_list=gene_list
+    
+    # ------ show genome------
+    for g in gn1.gene_list:
+        g.display()
+    
     gn1.insert(insert_len=6000)
+    for g in gn1.gene_list:
+        g.display()
     gn1.delete(delete_len=3000)
     
     #gn1.gene_list.append(gene_list[1])
     
-    # call class func is 2 times slower 
-    
+    for g in gn1.gene_list:
+        g.display()
         
-    # Bio-python draw genome
-    
-    
-    prot_posi = [1,3001,6001,9001,12001,15001,18001,21001,24001,27001]
-        
-    draw_genome(gn1)
+    # Bio-python draw genome, unfortunetely  we can't do it in 5bim
+    #draw_genome(gn1)
 
   
