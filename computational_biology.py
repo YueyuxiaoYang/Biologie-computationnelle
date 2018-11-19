@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 sys.path
 # add the path of this file in sys so as to import it
 sys.path.append('/home/yyang1/Bureau/Biologie-computationnelle') 
-import computational_biology as cb
+from computational_biology import *
 '''
 
 
@@ -59,11 +59,17 @@ class Genome:
     def __init__(self):
         # each gene is a list [gene_id, start position, end positon, orientation]
         self.gene_list = []
-        self.change_rate = 0.5
+        self.change_rate = 1
         self.generation = 0
         # defaut value is according to the TP 
         self.genome_len = 30000
         self.prot_posi = [1,3001,6001,9001,12001,15001,18001,21001,24001,27001]
+    def display_genome(self):
+        ''' display every gene in the genome 
+        '''
+        for g in self.gene_list:
+            g.display()
+            
     
     def insert(self, position=None,insert_len=60):
         '''insert a sequence in the genome
@@ -95,7 +101,7 @@ class Genome:
                delete_len (int): the length of deletion, defaut=60
        '''
         if position == None:
-           r_position = self.select_modify_position_delete(delete_len) #!!! not rubust need to change
+           r_position = self.select_modify_position_delete(delete_len) 
            print ("delete position: "+str(r_position))
            
         else:
@@ -163,6 +169,9 @@ class Genome:
             input:
                 inversion between position1 and position2
             rebust: 1. gene_len is a constant(l=1000)
+            
+            note: 
+                check if there is any gene inside chosen positions
         '''
         # Choose 2 position, position1<postiton2
         if position1 == None or position2 == None:
@@ -186,7 +195,11 @@ class Genome:
                 end_gene.append(g.end)
                 name_gene.append(g.id)
                 orientation.append(g.orientation)
-                
+        
+        # if Number_gene = 0, stop inversion process(nothing happens)
+        if Number_gene == 0:
+            return ("nothing changed")
+                        
         start_gene_i=min(start_gene)
         end_gene_i=max(end_gene)
         dist_gene=[]
@@ -216,10 +229,26 @@ class Genome:
             g.orientation = gene_to_modify[i][3]
         		
         return name_gene, start_gene, end_gene , orientation
+    
+    def mutation(self):
+        '''Randomly choose in/del or inversion for current genome, the result is next generation
+            
+        '''
+        r = self.change_rate
+        if np.random.rand(1) < r/(r+1): # in/del
+            if np.random.rand(1) < 0.5: # insert
+                self.insert()
+                mu = "insert"
+            else: #delete
+                self.delete()
+                mu = "delete"
+        else: # inversion
+            self.inversion()
+            mu = "inversion"
         
-
+        return mu
 '''
-We can not draw genome in 5Bim's computer
+We can not draw genome in 5Bim's computer, however, you can try AWS-C9, a online virtual IDE
 
 from Bio.SeqFeature import SeqFeature, FeatureLocation
 from Bio.Graphics import GenomeDiagram
@@ -265,7 +294,7 @@ def check_choose_position(gn):
     untouchble = []
     for r in gene_range:
         untouchble += range(r[0],r[1]+1)
-    '''
+    
     # test select_modify_position_inversion()
     test_position = []
     error = []
@@ -275,9 +304,9 @@ def check_choose_position(gn):
         if  p in untouchble:
             error.append(p)
     # plt.hist(test_position)
-    '''
+    
    
-    '''
+    
     # test select_modify_position_inversion()
     test_position2 = []
     error2 = []
@@ -288,7 +317,7 @@ def check_choose_position(gn):
             error2.append(p)
     return error
     # plt.hist(test_position2)
-    '''
+    
    
     test_position3 = []
     error3 = []
@@ -299,6 +328,20 @@ def check_choose_position(gn):
             error3.append(p)
     return error3,test_position3
     
+def check_mutation(gn,N = 1000):
+    '''Test 3 methods of genome modification
+    
+        Arguments:
+            gn(Genome): Genome instance
+            N(int): Nbr of modifications on a genome(N generation)
+    '''
+    mutation_list = []
+    for i in range(N):
+        mu = gn.mutation()
+        mutation_list.append(mu)
+    return mutation_list
+
+
         
 if __name__ == "__main__":    
     '''
@@ -309,6 +352,7 @@ if __name__ == "__main__":
     genes = []
     for l in lines:
         genes.append(l.split())
+    
     data.close()
     genes = genes[5:-1]
     # save genes in a list [class_gene, ....]
@@ -324,25 +368,17 @@ if __name__ == "__main__":
             a.orientation = -1
         gene_list.append(a)    
     
-
+    
         
     # ----- do some modification
     gn1 = Genome()
     gn1.gene_list=gene_list
+    gn1.display_genome()
     
+    mu_list = check_mutation(gn1)
+    np.hist(mu_list)
     # ------ show genome------
-    for g in gn1.gene_list:
-        g.display()
-    gn1.inversion(50, 16000)
-    
-    #gn1.insert(insert_len=6000)
-    
-    #gn1.delete(delete_len=3000)
-    
-    #gn1.gene_list.append(gene_list[1])
-    
-    for g in gn1.gene_list:
-        g.display()
+    gn1.display_genome()
         
     # Bio-python draw genome, unfortunetely  we can't do it in 5bim
     #draw_genome(gn1)
