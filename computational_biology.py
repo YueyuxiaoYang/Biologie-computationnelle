@@ -7,7 +7,7 @@ Created on Fri Oct 12 15:28:49 2018
 
 import numpy as np
 import sys
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 ''' if you wan to import this file 
 
@@ -181,6 +181,7 @@ class Genome:
                 posi2: posi2 for inversion
             Rebust:
                 1. every prot_posi produce same protine(ignore prot_id)
+                2. input arguments not checked
         '''
         pl = self.prot_posi
         po = posi1
@@ -189,8 +190,16 @@ class Genome:
         if method == "delete":
             prot_list = [ps for ps in pl if ps < po]+[ps-length for ps in pl if ps > po]
         if method == "inversion":
-            pass            
-        
+            prot_to_inv = [ps for ps in pl if ps > posi1 and ps < posi2]         
+            pr_not_inv = [ps for ps in pl if ps not in prot_to_inv]
+            #invert the prots
+            prot_to_inv.append(posi2)
+            pr_dist = np.array(prot_to_inv[::-1])
+            pr_dist = pr_dist[:-1] - pr_dist[1:]
+            p_after_inv = posi1 + np.add.accumulate(pr_dist)
+            prot_list = list(p_after_inv) + pr_not_inv
+            prot_list.sort()
+        return prot_list
     
     def inversion(self, position1= None, position2=None): 
         '''
@@ -374,6 +383,15 @@ def check_mutation(gn,N = 1000):
         mutation_list.append(mu)
     return mutation_list
 
+def check_modify_prot(gn, N=100):
+    c = "inversion"
+    for i in range(N):
+        #c = np.random.choice(['insert','delete','inversion'])
+        p1,p2 = sorted(np.random.choice(range(gn.prot_posi[-1]),size=2,replace=False))
+        print(p1,p2)
+        print(gn.modify_prot(c,posi1=p1,posi2=p2,length=60))
+        
+
 def tousidentfile(gn1):
 	header=["##gff-version 3","#!gff-spec-version 1.20","#!processor NCBI annotwriter",
 	"##sequence-region tousgenesidentiques 1 %d" % gn1.genome_len]
@@ -470,9 +488,9 @@ if __name__ == "__main__":
     # ------ show genome------
 
     # --- fichier 
-    gn1.insert()
-    gn1.gene_list.sort(key= lambda g:g.start) # sort the gene list by its start posi
-    tousidentfile(gn1)
+    #gn1.insert()
+    #gn1.gene_list.sort(key= lambda g:g.start) # sort the gene list by its start posi
+    #tousidentfile(gn1)
         
     # Bio-python draw genome, unfortunetely  we can't do it in 5bim
     #draw_genome(gn1)
