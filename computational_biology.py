@@ -54,7 +54,9 @@ class Genome:
             rate (float): the prob. ratio between insertion/deletion and inversion.
             generation (int): number of generations.
             genome_len(int): in the first generation length=30000
-            prot_posi(int list): list of protein position,with defaut value
+            prot_posi(int list): list of protein position,with defaut value, attention
+                        1.input manually might cause problem with diff prot. posi,
+                        2.Also, assume that protine name = hns all the time
     '''
     def __init__(self):
         # each gene is a list [gene_id, start position, end positon, orientation]
@@ -126,7 +128,8 @@ class Genome:
         # nothing can be insert inside a gene
         for g in self.gene_list:
             untouchble+=range(g.start,g.end+1)
-            
+        untouchble += self.prot_posi
+        
         genome_all_posi = range(1,1+self.genome_len)
         modifible = list(set(genome_all_posi)-set(untouchble))
         r_position = np.random.choice(modifible)                
@@ -145,6 +148,10 @@ class Genome:
         # delete_posi - delete_len not in the gene
         for g in self.gene_list:
             untouchble+=range(g.start,g.end+delete_len+1)
+        # delete_posi - delete_len > prot_posi
+        for p in self.prot_posi:
+            untouchble += range(p,p+delete_len+1)
+        
         genome_all_posi = list(range(1+delete_len,1+self.genome_len))
         modifible = list(set(genome_all_posi)-set(untouchble))
         r_position = np.random.choice(modifible)   
@@ -159,19 +166,38 @@ class Genome:
         # delete_posi - delete_len not in the gene
         for g in self.gene_list:
             untouchble+=range(g.start,g.end+1)
+        untouchble += self.prot_posi
         genome_all_posi = list(range(1,1+self.genome_len))
         modifible = list(set(genome_all_posi)-set(untouchble))
         r_positions = np.random.choice(modifible,size=2,replace=False)   
         return sorted(r_positions)
-
+    
+    def modify_prot(self, method,posi1,posi2=None,length=None):
+        ''' Modify the protine list
+                
+            Arguments: 
+                method(int): insert, delete or inversion
+                posi1: insert/delete position, posi1 for inversion
+                posi2: posi2 for inversion
+            Rebust:
+                1. every prot_posi produce same protine(ignore prot_id)
+        '''
+        pl = self.prot_posi
+        po = posi1
+        if method == "insert":
+            prot_list = [ps for ps in pl if ps < po]+[ps+length for ps in pl if ps > po]
+        if method == "delete":
+            prot_list = [ps for ps in pl if ps < po]+[ps-length for ps in pl if ps > po]
+        if method == "inversion":
+            pass            
+        
+    
     def inversion(self, position1= None, position2=None): 
         '''
             input:
                 inversion between position1 and position2
             rebust: 1. gene_len is a constant(l=1000)
             
-            note: 
-                check if there is any gene inside chosen positions
         '''
         # Choose 2 position, position1<postiton2
         if position1 == None or position2 == None:
@@ -351,7 +377,7 @@ def check_mutation(gn,N = 1000):
 def tousidentfile(gn1):
 	header=["##gff-version 3","#!gff-spec-version 1.20","#!processor NCBI annotwriter",
 	"##sequence-region tousgenesidentiques 1 %d" % gn1.genome_len]
-	f= open("tousgenesidentiques1.gff","w+")
+	f= open("./input/tousgenesidentiques1.gff","w+")
 	for i in range(len(header)):
 		f.write("%s\n" % header[i])
 	f.write("tousgenesidentiques\tRefSeq\tregion\t1\t%d\t.\t+\t.\tID=id0;Name=tousgenesidentiques\n" %  gn1.genome_len
@@ -366,7 +392,7 @@ def tousidentfile(gn1):
 	f.close() 
 	#for TSS.DAT
 	header2=["TUindex","TUorient","TSS_pos","TSS_strength\n"]
-	f2=open("TSS.dat","w+")
+	f2=open("./input/TSS.dat","w+")
 	f2.write("%s" % header2[0])
 	for i in range(1,len(header2)): 
 		f2.write("\t%s" % header2[i])
@@ -380,7 +406,7 @@ def tousidentfile(gn1):
 	f2.close()
 	#for TTS.dat
 	header3=["TUindex","TUorient","TTS_pos","TTS_proba_off\n"]
-	f3=open("TTS.dat","w+")
+	f3=open("./input/TTS.dat","w+")
 	f3.write("%s" % header3[0])
 	for i in range(1,len(header3)): 
 		f3.write("\t%s" % header3[i])
@@ -394,7 +420,7 @@ def tousidentfile(gn1):
 	f3.close()
 	#for prot.dat 
 	header4=["prot_name","prot_pos\n"]
-	f4=open("prot.dat","w+")	
+	f4=open("./input/prot.dat","w+")	
 	f4.write("%s" % header4[0])
 	for i in range(1,len(header4)): 
 		f4.write("\t%s" % header4[i])	
@@ -436,15 +462,17 @@ if __name__ == "__main__":
     gn1.gene_list=gene_list
     gn1.display_genome()
     
-    cl = check_mutation(gn1)
-    
-    plt.hist(cl)
+    # verify mutation
+    #cl = check_mutation(gn1)
+    #plt.hist(cl)
    # mu_list = check_mutation(gn1)
    # np.hist(mu_list)
     # ------ show genome------
 
     # --- fichier 
-    #tousidentfile(gn1)
+    gn1.insert()
+    gn1.gene_list.sort(key= lambda g:g.start) # sort the gene list by its start posi
+    tousidentfile(gn1)
         
     # Bio-python draw genome, unfortunetely  we can't do it in 5bim
     #draw_genome(gn1)

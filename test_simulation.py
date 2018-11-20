@@ -4,16 +4,8 @@ Created on Tue Nov 20 14:54:28 2018
 
 @author: Lily
 """
-import os,sys
-import configparser
-import pandas as pd
-import numpy as np
-import collections as col
-from pylab import *
-import errno
-import csv
-from shutil import copy
-from scipy.optimize import fsolve
+
+sys.path.append('/home/yyang1/Bureau/Biologie-computationnelle/SamMayer/TCDS-v2-master/TCDS/') 
 import simulation as sim 
 
 
