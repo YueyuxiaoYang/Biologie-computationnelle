@@ -63,7 +63,7 @@ class Genome:
         self.generation = 0
         # defaut value is according to the TP 
         self.genome_len = 30000
-        self.prot_posi = [1,3001,6001,9001,12001,15001,18001,21001,24001,27001]
+        self.prot_posi = [1,3001,6001,9001,12001,15001,18001,21001,24001,27001] # initial, need to modify
     def display_genome(self):
         ''' display every gene in the genome 
         '''
@@ -83,7 +83,7 @@ class Genome:
            r_position = self.select_modify_position_insert()
         else:
            r_position = position
-        print ("insert position: "+str(r_position))
+        #print ("insert position: "+str(r_position))
         # find all genes after r_position, every gene + insert_len
         genes_to_modify = [g for g in self.gene_list if g.start > r_position]
         for g in genes_to_modify:
@@ -102,7 +102,7 @@ class Genome:
        '''
         if position == None:
            r_position = self.select_modify_position_delete(delete_len) 
-           print ("delete position: "+str(r_position))
+           #print ("delete position: "+str(r_position))
            
         else:
            r_position = position
@@ -189,7 +189,7 @@ class Genome:
         name_gene=[]
         orientation=[]
         for g in self.gene_list:
-            if (r_position1 <= g.start and r_position2>= g.end) : 
+            if (r_position1 < g.start and r_position2> g.end) : 
                 Number_gene = Number_gene +1
                 start_gene.append(g.start)
                 end_gene.append(g.end)
@@ -199,7 +199,14 @@ class Genome:
         # if Number_gene = 0, stop inversion process(nothing happens)
         if Number_gene == 0:
             return ("nothing changed")
-                        
+        print ('inversion between',r_position1,r_position2)         
+        
+        # sort gene list to inversion, by its start position
+        g_list = list(zip(name_gene, start_gene, end_gene,orientation))        
+        g_list.sort(key= lambda g:g[1])
+        name_gene, start_gene, end_gene,orientation = [list(t) for t in zip(*g_list)]
+        #print(name_gene, start_gene, end_gene,orientation)                
+               
         start_gene_i=min(start_gene)
         end_gene_i=max(end_gene)
         dist_gene=[]
@@ -238,13 +245,13 @@ class Genome:
         if np.random.rand(1) < r/(r+1): # in/del
             if np.random.rand(1) < 0.5: # insert
                 self.insert()
-                mu = "insert"
+                mu = 1 #"insert"
             else: #delete
                 self.delete()
-                mu = "delete"
+                mu = 2 #"delete"
         else: # inversion
             self.inversion()
-            mu = "inversion"
+            mu = 3 #"inversion"
         
         return mu
 '''
@@ -429,13 +436,15 @@ if __name__ == "__main__":
     gn1.gene_list=gene_list
     gn1.display_genome()
     
+    cl = check_mutation(gn1)
+    
+    plt.hist(cl)
    # mu_list = check_mutation(gn1)
    # np.hist(mu_list)
     # ------ show genome------
-    gn1.display_genome()
 
     # --- fichier 
-    tousidentfile(gn1)
+    #tousidentfile(gn1)
         
     # Bio-python draw genome, unfortunetely  we can't do it in 5bim
     #draw_genome(gn1)
