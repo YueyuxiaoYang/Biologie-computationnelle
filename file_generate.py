@@ -2,7 +2,6 @@
 def tousidentfile(gn1):
 	header=["##gff-version 3","#!gff-spec-version 1.20","#!processor NCBI annotwriter",
 	"##sequence-region tousgenesidentiques 1 %d" % gn1.genome_len]
-	gn1.
 	f= open("tousgenesidentiques1.gff","w+")
 	for i in range(len(header)):
 		f.write("%s\n" % header[i])

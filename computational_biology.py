@@ -341,7 +341,61 @@ def check_mutation(gn,N = 1000):
         mutation_list.append(mu)
     return mutation_list
 
-
+def tousidentfile(gn1):
+	header=["##gff-version 3","#!gff-spec-version 1.20","#!processor NCBI annotwriter",
+	"##sequence-region tousgenesidentiques 1 %d" % gn1.genome_len]
+	f= open("tousgenesidentiques1.gff","w+")
+	for i in range(len(header)):
+		f.write("%s\n" % header[i])
+	f.write("tousgenesidentiques\tRefSeq\tregion\t1\t%d\t.\t+\t.\tID=id0;Name=tousgenesidentiques\n" %  gn1.genome_len
+	)
+	for n in range(10):
+		if (gn1.gene_list[n].orientation==1):
+			gn1.gene_list[n].orientation='+'
+		else :
+			gn1.gene_list[n].orientation='-'
+		base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" % (gn1.gene_list[n].start,gn1.gene_list[n].end,gn1.gene_list[n].orientation,gn1.gene_list[n].id)
+		f.write(base)
+	f.close() 
+	#for TSS.DAT
+	header2=["TUindex","TUorient","TSS_pos","TSS_strength\n"]
+	f2=open("TSS.dat","w+")
+	f2.write("%s" % header2[0])
+	for i in range(1,len(header2)): 
+		f2.write("\t%s" % header2[i])
+	for n in range(10): 
+		if (gn1.gene_list[n].orientation==1):
+			gn1.gene_list[n].orientation='+'
+		else :
+			gn1.gene_list[n].orientation='-'
+		base="%s\t%s\t%s\t0.2\n" %(gn1.gene_list[n].id, gn1.gene_list[n].orientation, gn1.gene_list[n].start)
+		f2.write(base)	
+	f2.close()
+	#for TTS.dat
+	header3=["TUindex","TUorient","TTS_pos","TTS_proba_off\n"]
+	f3=open("TTS.dat","w+")
+	f3.write("%s" % header3[0])
+	for i in range(1,len(header3)): 
+		f3.write("\t%s" % header3[i])
+	for n in range(10): 
+		if (gn1.gene_list[n].orientation==1):
+			gn1.gene_list[n].orientation='+'
+		else :
+			gn1.gene_list[n].orientation='-'
+		base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id, gn1.gene_list[n].orientation, gn1.gene_list[n].end)
+		f3.write(base)	
+	f3.close()
+	#for prot.dat 
+	header4=["prot_name","prot_pos\n"]
+	f4=open("prot.dat","w+")	
+	f4.write("%s" % header4[0])
+	for i in range(1,len(header4)): 
+		f4.write("\t%s" % header4[i])	
+	for n in range(10): 
+		base="hns\t%s\n" %(gn1.prot_posi[n])
+		f4.write(base)
+	f4.close()	
+	
         
 if __name__ == "__main__":    
     '''
@@ -375,10 +429,13 @@ if __name__ == "__main__":
     gn1.gene_list=gene_list
     gn1.display_genome()
     
-    mu_list = check_mutation(gn1)
-    np.hist(mu_list)
+   # mu_list = check_mutation(gn1)
+   # np.hist(mu_list)
     # ------ show genome------
     gn1.display_genome()
+
+    # --- fichier 
+    tousidentfile(gn1)
         
     # Bio-python draw genome, unfortunetely  we can't do it in 5bim
     #draw_genome(gn1)
