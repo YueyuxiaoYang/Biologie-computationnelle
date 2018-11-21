@@ -6,11 +6,11 @@ Created on Fri Oct 12 15:28:49 2018
 """
 
 import numpy as np
-import sys
 #import matplotlib.pyplot as plt
 
 ''' if you wan to import this file 
 
+import sys
 sys.path
 # add the path of this file in sys so as to import it
 sys.path.append('/home/yyang1/Bureau/Biologie-computationnelle') 
@@ -93,7 +93,10 @@ class Genome:
             g.end = g.end + insert_len
         
         #genome_len + insert_len
-        self.genome_len += insert_len
+        self.genome_len += insert_len       
+        # insert also protine list
+        self.prot_posi = self.modify_prot(method="insert", posi1=r_position,length=insert_len)
+        
     
     def delete(self, position=None, delete_len=60):
         '''delete a sequence in the genome
@@ -114,6 +117,9 @@ class Genome:
         for g in genes_to_modify:
             g.start = g.start - delete_len
             g.end = g.end - delete_len
+        
+        # delete also protine list
+        self.prot_posi = self.modify_prot(method="delete", posi1=r_position,length=delete_len)
         
         self.genome_len -= delete_len
        
@@ -198,7 +204,7 @@ class Genome:
             pr_dist = pr_dist[:-1] - pr_dist[1:]
             p_after_inv = posi1 + np.add.accumulate(pr_dist)
             prot_list = list(p_after_inv) + pr_not_inv
-            prot_list.sort()
+        prot_list.sort()
         return prot_list
     
     def inversion(self, position1= None, position2=None): 
@@ -217,6 +223,10 @@ class Genome:
             r_position1 = position1
             r_position2 = position2
         
+        # invert also protine list
+        # ? nothing between posi1 and posi2, ? 1 prot between posi1 and posi2 --> OK
+        self.prot_posi = self.modify_prot(method="inversion", posi1=r_position1,posi2=r_position2)
+        
         # inversion between r_posi1 and r_posi2
         Number_gene=0
         start_gene=[]
@@ -234,7 +244,7 @@ class Genome:
         # if Number_gene = 0, stop inversion process(nothing happens)
         if Number_gene == 0:
             return ("nothing changed")
-        print ('inversion between',r_position1,r_position2)         
+        #print ('inversion between',r_position1,r_position2)         
         
         # sort gene list to inversion, by its start position
         g_list = list(zip(name_gene, start_gene, end_gene,orientation))        
@@ -269,7 +279,7 @@ class Genome:
             g.start = gene_to_modify[i][1]
             g.end = gene_to_modify[i][2]
             g.orientation = gene_to_modify[i][3]
-        		
+            
         return name_gene, start_gene, end_gene , orientation
     
     def mutation(self):
@@ -383,15 +393,30 @@ def check_mutation(gn,N = 1000):
         mutation_list.append(mu)
     return mutation_list
 
-def check_modify_prot(gn, N=100):
-    c = "inversion"
+def check_modify_prot(gn, N=1000):
+    '''Verify if Genome.modify_prot is correct
+    
+    '''
+    #c = "inversion"
+    
+    '''
+    # check modify_prot function
     for i in range(N):
         #c = np.random.choice(['insert','delete','inversion'])
-        p1,p2 = sorted(np.random.choice(range(gn.prot_posi[-1]),size=2,replace=False))
-        print(p1,p2)
-        print(gn.modify_prot(c,posi1=p1,posi2=p2,length=60))
-        
-
+        p1,p2 = 10,4000
+        #print(p1,p2)
+        gn.prot_posi = gn.modify_prot(c,posi1=p1,posi2=p2,length=60)
+        print(gn.prot_posi)
+    ''' 
+    # check mutation with adding modify_prot
+    print("original protine list:\n",gn.prot_posi)
+    mu_list = []
+    for i in range(N):
+        mu = gn.mutation()
+        #print(mu,gn.prot_posi)
+        mu_list.append(mu)
+    return mu_list
+    
 def tousidentfile(gn1):
 	header=["##gff-version 3","#!gff-spec-version 1.20","#!processor NCBI annotwriter",
 	"##sequence-region tousgenesidentiques 1 %d" % gn1.genome_len]
@@ -478,7 +503,7 @@ if __name__ == "__main__":
     # ----- do some modification
     gn1 = Genome()
     gn1.gene_list=gene_list
-    gn1.display_genome()
+    #gn1.display_genome()
     
     # verify mutation
     #cl = check_mutation(gn1)
