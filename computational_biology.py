@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Oct 12 15:28:49 2018
-
 @author: Yang Pauline Lilia
 """
 
@@ -9,7 +8,6 @@ import numpy as np
 #import matplotlib.pyplot as plt
 
 ''' if you wan to import this file 
-
 import sys
 sys.path
 # add the path of this file in sys so as to import it
@@ -61,7 +59,7 @@ class Genome:
     def __init__(self):
         # each gene is a list [gene_id, start position, end positon, orientation]
         self.gene_list = []
-        self.change_rate = 1.0
+        self.change_rate = 1
         self.generation = 0
         # defaut value is according to the TP 
         self.genome_len = 30000
@@ -299,25 +297,23 @@ class Genome:
             mu = 3 #"inversion"
         
         return mu
-
+    
     def loop_mutation(self, N) :  	
-#N : number of mutations
-	for i in range(N): 
-		mut=self.mutation()
-		if (mut ==1): 
-			self.insert() 
-		if (mut==2): 
-			self.delete()
-		if (mut==3): 
-			self.inversion() 
-		print mut		
-		print self.gene_list 
-		print self.prot_posi
-
-	tousidentfile(self)
+        #N : number of mutations
+        for i in range(N): 
+            mut=self.mutation()
+            if (mut ==1): 
+                self.insert() 
+            if (mut==2): 
+                self.delete()
+            if (mut==3): 
+                self.inversion() 
+            print (mut)		
+            print(self.gene_list) 
+            print(self.prot_posi)
+        tousidentfile(self)
 '''
 We can not draw genome in 5Bim's computer, however, you can try AWS-C9, a online virtual IDE
-
 from Bio.SeqFeature import SeqFeature, FeatureLocation
 from Bio.Graphics import GenomeDiagram
 from reportlab.lib.units import cm
@@ -433,20 +429,20 @@ def check_modify_prot(gn, N=1000):
         mu_list.append(mu)
     return mu_list
     
-def tousidentfile(gn1):
+def tousidentfile(self):
 	header=["##gff-version 3","#!gff-spec-version 1.20","#!processor NCBI annotwriter",
-	"##sequence-region tousgenesidentiques 1 %d" % gn1.genome_len]
+	"##sequence-region tousgenesidentiques 1 %d" % self.genome_len]
 	f= open("./input/tousgenesidentiques1.gff","w+")
 	for i in range(len(header)):
 		f.write("%s\n" % header[i])
-	f.write("tousgenesidentiques\tRefSeq\tregion\t1\t%d\t.\t+\t.\tID=id0;Name=tousgenesidentiques\n" %  gn1.genome_len
+	f.write("tousgenesidentiques\tRefSeq\tregion\t1\t%d\t.\t+\t.\tID=id0;Name=tousgenesidentiques\n" %  self.genome_len
 	)
 	for n in range(10):
-		if (gn1.gene_list[n].orientation==1):
-			gn1.gene_list[n].orientation='+'
+		if (self.gene_list[n].orientation==1):
+			self.gene_list[n].orientation='+'
 		else :
-			gn1.gene_list[n].orientation='-'
-		base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" % (gn1.gene_list[n].start,gn1.gene_list[n].end,gn1.gene_list[n].orientation,gn1.gene_list[n].id)
+			self.gene_list[n].orientation='-'
+		base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" % (self.gene_list[n].start,self.gene_list[n].end,self.gene_list[n].orientation,self.gene_list[n].id)
 		f.write(base)
 	f.close() 
 	#for TSS.DAT
@@ -456,14 +452,12 @@ def tousidentfile(gn1):
 	for i in range(1,len(header2)): 
 		f2.write("\t%s" % header2[i])
 	for n in range(10): 
-		if (gn1.gene_list[n].orientation==1):
-			gn1.gene_list[n].orientation='+'
-            base="%s\t%s\t%s\t0.2\n" %(gn1.gene_list[n].id, gn1.gene_list[n].orientation, gn1.gene_list[n].start)
-            f2.write(base)
-        else :
-			gn1.gene_list[n].orientation='-'
-            base="%s\t%s\t%s\t0.2\n" %(gn1.gene_list[n].id, gn1.gene_list[n].orientation, gn1.gene_list[n].end)
-            f2.write(base)	
+		if (self.gene_list[n].orientation==1):
+			self.gene_list[n].orientation='+'
+		else :
+			self.gene_list[n].orientation='-'
+		base="%s\t%s\t%s\t0.2\n" %(self.gene_list[n].id, self.gene_list[n].orientation, self.gene_list[n].start)
+		f2.write(base)	
 	f2.close()
 	#for TTS.dat
 	header3=["TUindex","TUorient","TTS_pos","TTS_proba_off\n"]
@@ -472,14 +466,12 @@ def tousidentfile(gn1):
 	for i in range(1,len(header3)): 
 		f3.write("\t%s" % header3[i])
 	for n in range(10): 
-		if (gn1.gene_list[n].orientation==1):
-			gn1.gene_list[n].orientation='+'
-            base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id, gn1.gene_list[n].orientation, gn1.gene_list[n].end)
-            f3.write(base)  
+		if (self.gene_list[n].orientation==1):
+			self.gene_list[n].orientation='+'
 		else :
-			gn1.gene_list[n].orientation='-'
-            base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id, gn1.gene_list[n].orientation, gn1.gene_list[n].start)
-            f3.write(base)	
+			self.gene_list[n].orientation='-'
+		base="%s\t%s\t%s\t1.\n" %(self.gene_list[n].id, self.gene_list[n].orientation, self.gene_list[n].end)
+		f3.write(base)	
 	f3.close()
 	#for prot.dat 
 	header4=["prot_name","prot_pos\n"]
@@ -488,14 +480,10 @@ def tousidentfile(gn1):
 	for i in range(1,len(header4)): 
 		f4.write("\t%s" % header4[i])	
 	for n in range(10): 
-		base="hns\t%s\n" %(gn1.prot_posi[n])
+		base="hns\t%s\n" %(self.prot_posi[n])
 		f4.write(base)
 	f4.close()	
-
-
-
 	
-			
         
 if __name__ == "__main__":    
     '''
@@ -526,8 +514,8 @@ if __name__ == "__main__":
         
     # ----- do some modification
     gn1 = Genome()
-    gn1.loop_mutation(10)
     #gn1.gene_list=gene_list
+    gn1.loop_mutation(10)
     #gn1.display_genome()
     
     # verify mutation
@@ -544,5 +532,3 @@ if __name__ == "__main__":
         
     # Bio-python draw genome, unfortunetely  we can't do it in 5bim
     #draw_genome(gn1)
-
-  
