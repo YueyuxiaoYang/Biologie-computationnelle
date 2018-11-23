@@ -5,7 +5,7 @@ Created on Tue Nov 20 14:54:28 2018
 @author: Lily
 """
 
-sys.path.append('/home/yyang1/Bureau/Biologie-computationnelle/SamMayer/TCDS-v2-master/TCDS/') 
+sys.path.append('/home/pbazelle/Documents/5BIM/biologie computationnelle/Biologie-computationnelle/SamMayer/TCDS-v2-master/TCDS/') 
 import simulation as sim 
 
 
