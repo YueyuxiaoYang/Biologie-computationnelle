@@ -442,10 +442,12 @@ def tousidentfile(gn1):
 	for n in range(10): 
 		if (gn1.gene_list[n].orientation==1):
 			gn1.gene_list[n].orientation='+'
-		else :
+            base="%s\t%s\t%s\t0.2\n" %(gn1.gene_list[n].id, gn1.gene_list[n].orientation, gn1.gene_list[n].start)
+            f2.write(base)
+        else :
 			gn1.gene_list[n].orientation='-'
-		base="%s\t%s\t%s\t0.2\n" %(gn1.gene_list[n].id, gn1.gene_list[n].orientation, gn1.gene_list[n].start)
-		f2.write(base)	
+            base="%s\t%s\t%s\t0.2\n" %(gn1.gene_list[n].id, gn1.gene_list[n].orientation, gn1.gene_list[n].end)
+            f2.write(base)	
 	f2.close()
 	#for TTS.dat
 	header3=["TUindex","TUorient","TTS_pos","TTS_proba_off\n"]
@@ -456,10 +458,12 @@ def tousidentfile(gn1):
 	for n in range(10): 
 		if (gn1.gene_list[n].orientation==1):
 			gn1.gene_list[n].orientation='+'
+            base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id, gn1.gene_list[n].orientation, gn1.gene_list[n].end)
+            f3.write(base)  
 		else :
 			gn1.gene_list[n].orientation='-'
-		base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id, gn1.gene_list[n].orientation, gn1.gene_list[n].end)
-		f3.write(base)	
+            base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id, gn1.gene_list[n].orientation, gn1.gene_list[n].start)
+            f3.write(base)	
 	f3.close()
 	#for prot.dat 
 	header4=["prot_name","prot_pos\n"]
