@@ -61,7 +61,7 @@ class Genome:
     def __init__(self):
         # each gene is a list [gene_id, start position, end positon, orientation]
         self.gene_list = []
-        self.change_rate = 1
+        self.change_rate = 1.0
         self.generation = 0
         # defaut value is according to the TP 
         self.genome_len = 30000
@@ -299,6 +299,22 @@ class Genome:
             mu = 3 #"inversion"
         
         return mu
+
+    def loop_mutation(self, N) :  	
+#N : number of mutations
+	for i in range(N): 
+		mut=self.mutation()
+		if (mut ==1): 
+			self.insert() 
+		if (mut==2): 
+			self.delete()
+		if (mut==3): 
+			self.inversion() 
+		print mut		
+		print self.gene_list 
+		print self.prot_posi
+
+	tousidentfile(self)
 '''
 We can not draw genome in 5Bim's computer, however, you can try AWS-C9, a online virtual IDE
 
@@ -471,7 +487,11 @@ def tousidentfile(gn1):
 		base="hns\t%s\n" %(gn1.prot_posi[n])
 		f4.write(base)
 	f4.close()	
+
+
+
 	
+			
         
 if __name__ == "__main__":    
     '''
@@ -502,7 +522,8 @@ if __name__ == "__main__":
         
     # ----- do some modification
     gn1 = Genome()
-    gn1.gene_list=gene_list
+    gn1.loop_mutation(10)
+    #gn1.gene_list=gene_list
     #gn1.display_genome()
     
     # verify mutation
