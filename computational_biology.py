@@ -518,9 +518,9 @@ if __name__ == "__main__":
         
     # ----- do some modification
     gn1 = Genome()
-    #gn1.gene_list=gene_list
+    gn1.gene_list=gene_list
     gn1.loop_mutation(10)
-    #gn1.display_genome()
+    gn1.display_genome()
     
     # verify mutation
     #cl = check_mutation(gn1)
