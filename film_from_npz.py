@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-import simulation as sim
+import TCDS.simulation as sim
 import TCDS.plotting as plotting
 import matplotlib
 matplotlib.rcParams.update({'font.size': 13})
