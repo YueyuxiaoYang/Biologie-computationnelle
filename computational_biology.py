@@ -431,18 +431,18 @@ def check_modify_prot(gn, N=1000):
     
 def tousidentfile(gn1):
 	header=["##gff-version 3","#!gff-spec-version 1.20","#!processor NCBI annotwriter",
-	"##sequence-region tousgenesidentiques 1 %d" % gn1.genome_len]
+	"##sequence-region tousgenesidentiques 1 %d" %gn1.genome_len]
 	f= open("./input/gff.gff","w+")
 	for i in range(len(header)):
 		f.write("%s\n" % header[i])
-	f.write("tousgenesidentiques\tRefSeq\tregion\t1\t%d\t.\t+\t.\tID=id0;Name=tousgenesidentiques\n" %  gn1.genome_len
+	f.write("tousgenesidentiques\tRefSeq\tregion\t1\t%d\t.\t+\t.\tID=id0;Name=tousgenesidentiques\n" %gn1.genome_len
 	)
 	for n in range(10):
 		if (gn1.gene_list[n].orientation==1):
-            base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" % (gn1.gene_list[n].start,gn1.gene_list[n].end,"+",gn1.gene_list[n].id)
-
+			base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" %(gn1.gene_list[n].start,gn1.gene_list[n].end,"+",gn1.gene_list[n].id)
+            
 		else :
-            base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" % (gn1.gene_list[n].end,gn1.gene_list[n].start,"-",gn1.gene_list[n].id)
+			base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" %(gn1.gene_list[n].end,gn1.gene_list[n].start,"-",gn1.gene_list[n].id)
 		f.write(base)
 	f.close() 
 	#for TSS.DAT
@@ -453,10 +453,10 @@ def tousidentfile(gn1):
 		f2.write("\t%s" % header2[i])
 	for n in range(10): 
 		if (gn1.gene_list[n].orientation==1):
-			base="%s\t%s\t%s\t0.2\n" %(gn1.gene_list[n].id,"+", gn1.gene_list[n].start)
+			base="%s\t%s\t%s\t0.2\n" %(gn1.gene_list[n].id-1,"+", gn1.gene_list[n].start)
 			f2.write(base)	
 		else :
-			base="%s\t%s\t%s\t0.2\n" %(gn1.gene_list[n].id, "-", gn1.gene_list[n].end)
+			base="%s\t%s\t%s\t0.2\n" %(gn1.gene_list[n].id-1, "-", gn1.gene_list[n].end)
 			f2.write(base)	
 	f2.close()
 	#for TTS.dat
@@ -467,10 +467,10 @@ def tousidentfile(gn1):
 		f3.write("\t%s" % header3[i])
 	for n in range(10): 
 		if (gn1.gene_list[n].orientation==1):
-			base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id, "+", gn1.gene_list[n].end)
+			base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, "+", gn1.gene_list[n].end)
 			f3.write(base)	
 		else :
-			base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id, "-", gn1.gene_list[n].start)
+			base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, "-", gn1.gene_list[n].start)
 			f3.write(base)	
 	f3.close()
 	#for prot.dat 
@@ -515,8 +515,7 @@ if __name__ == "__main__":
     # ----- do some modification
     gn1 = Genome()
     gn1.gene_list=gene_list
-    gn1.loop_mutation(10)
-    gn1.display_genome()
+    tousidentfile(gn1)
     
     # verify mutation
     #cl = check_mutation(gn1)
