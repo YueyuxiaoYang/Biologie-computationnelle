@@ -10,57 +10,58 @@ import matplotlib
 import numpy as np
 #sys.path.append('/home/yyang1/Bureau/Biologie-computationnelle/') 
 import simulation as sim 
+from computational_biology import *
 #import SamMayer.TCDS_v2.TCDS.plotting_v2 as plotting
 #matplotlib.rcParams.update({'font.size': 13})
 
 INI_file= 'params.ini'
 output_dir='output'
-
 output_dir_res = output_dir+"/all_res"
-sim.start_transcribing(INI_file, output_dir)
 
-'''
-try:
-    #output_dir=sys.argv[2]
+
+# ------ input Genome information -----------
+data  = open("tousgenesidentiques.gff", 'r')
+lines = data.readlines()
+genes = []
+for l in lines:
+    genes.append(l.split())
+
+data.close()
+genes = genes[5:-1]
+# save genes in a list [class_gene, ....]
+gene_list = [] # data structure for saving initial genome
+for g in genes:
+    a = gene()
+    a.id = int(g[-1][12:])
+    a.start = int(g[3])
+    a.end = int(g[4])
+    if  g[-3] == '+':
+        a.orientation = 1
+    else:
+        a.orientation = -1
+    gene_list.append(a)    
+
+
     
-except:
-    print("sim goes wrong")
-'''
-'''
-sigma_info = np.load(output_dir_res+"/save_sigma_info.npz")
-RNAPs_info = np.load(output_dir_res+"/save_RNAPs_info.npz")
+# ----- do some modification
 
-Barr_sigma_info = sigma_info["Barr_sigma_info"]
-Dom_size_info = sigma_info["Dom_size_info"]
+gn1 = Genome()
+gn1.gene_list=gene_list
+tousidentfile(gn1)
+# first generation
+sim.start_transcribing(INI_file, output_dir)
+gn1.cal_fitness()
 
-for i, Barr_sigma_val in enumerate(sigma_info["Barr_sigma_info"]):
-	one_sigma_info = np.repeat(Barr_sigma_val, sigma_info["Dom_size_info"][i])
-	RNAPs_pos_info = RNAPs_info["RNAPs_info"][:, 1, i]
-	plotting.plot_mean_sigma_genes_v2(INI_file, one_sigma_info, RNAPs_pos_info)
-'''
-
-
-'''
-if __name__ == '__main__':
-    try:
-        INI_file="params.ini" #sys.argv[1]           # e.g "../analysis_scripts/example/params.ini"
-        # First simulation
-        sim.start_transcribing(INI_file, "output")
-        # or you can specify the output path
-        #start_transcribing(INI_file, output_path)
-
-        # Resuming
-        # uncomment this two lines if you want to resume the simulation
-        # 'first_output_path' means the path from which the script will get the npz files
-        #first_output_path=sys.argv[2]        # e.g "../analysis_scripts/example/first_output"
-        #start_transcribing(INI_file, first_output_path, resume=True)
-    except configparser.NoSectionError:
-        print("Error ! Please check the path to the paraneters files !")
-        sys.exit(1)
-    except PermissionError:
-        print("Permission denied ! Please check the directory to the output files !")
-        sys.exit(1)
-    except (FileNotFoundError, NameError):
-        print("Error ! Please check the directory to the output files !")
-        sys.exit(1)
-'''
+# mutation
+fit_list = []
+mutation_type = []
+for i in range(10):
+    mut = gn1.mutation()
+    #gn1.display_genome()
+    mutation_type.append(mut)
+    tousidentfile(gn1)
+    sim.start_transcribing(INI_file, output_dir)
+    f = gn1.cal_fitness()
+    fit_list.append(gn1.fitness)
+    
+    

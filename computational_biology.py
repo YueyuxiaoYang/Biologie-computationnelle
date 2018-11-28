@@ -35,7 +35,7 @@ class gene:
         self.start = -1 # start position should be between 1 and 30000
         self.end = 0 # end position should be [1:30000]
         self.orientation = 0 # '+':1, '-':0
-        self.length = 1000 # length of the gene is 1000 by defaut,and it is a constant 
+        self.length = 999 # length of the gene is 1000 by defaut,and it is a constant 
     def display(self):
         '''
             display all Attributes of a gene
@@ -64,6 +64,8 @@ class Genome:
         # defaut value is according to the TP 
         self.genome_len = 30000
         self.prot_posi = [1,3001,6001,9001,12001,15001,18001,21001,24001,27001] # initial, need to modify
+        self.fitness = 0
+        self.fit_exp = np.array([0.036,0.036,0.273,0.091,0.091,0.091,0.018,0.045,0.045,0.273])
     def display_genome(self):
         ''' display every gene in the genome 
         '''
@@ -254,7 +256,7 @@ class Genome:
         end_gene_i=max(end_gene)
         dist_gene=[]
         n=len(name_gene)#nombre de gene 
-        l=1000 # taille d'un gene 
+        l=999 # taille d'un gene 
         for i in range(1,n):
         		dist_gene.append(start_gene[i]-end_gene[i-1])
         	#inverser les index des nouveaux genes 
@@ -298,20 +300,14 @@ class Genome:
         
         return mu
     
-    def loop_mutation(self, N) :  	
-        #N : number of mutations
-        for i in range(N): 
-            mut=self.mutation()
-            if (mut ==1): 
-                self.insert() 
-            if (mut==2): 
-                self.delete()
-            if (mut==3): 
-                self.inversion() 
-            print (mut)		
-            print(self.gene_list) 
-            print(self.prot_posi)
-        tousidentfile(self)
+    def cal_fitness(self):
+        obs = np.genfromtxt('output/save_tr_nbr.csv')
+        obs = obs/sum(obs)
+        fitness = np.exp(-1*sum(np.abs(obs-self.fit_exp)/self.fit_exp))
+        self.fitness = fitness
+        return self.fitness
+    
+    
 '''
 We can not draw genome in 5Bim's computer, however, you can try AWS-C9, a online virtual IDE
 from Bio.SeqFeature import SeqFeature, FeatureLocation
@@ -347,87 +343,7 @@ for g in gene_list:
     g.display()
 '''
 
-def check_choose_position(gn):
-    '''choose postions_to_modify many times to see if they are inside the gene
-       
-        Arguments:
-           gn(Genmoe): Genome instance
-    '''
-    g_list = gn.gene_list
-    gene_range = [(g.start,g.end) for g in g_list]
-    untouchble = []
-    for r in gene_range:
-        untouchble += range(r[0],r[1]+1)
-    
-    # test select_modify_position_inversion()
-    test_position = []
-    error = []
-    for i in range(10000):        
-        p = gn.select_modify_position_insert()
-        #test_position.append(p)
-        if  p in untouchble:
-            error.append(p)
-    # plt.hist(test_position)
-    
-   
-    
-    # test select_modify_position_inversion()
-    test_position2 = []
-    error2 = []
-    for i in range(10000):        
-        p = gn.select_modify_position_delete(60)
-        #test_position2.append(p)
-        if  p in untouchble:
-            error2.append(p)
-    return error
-    # plt.hist(test_position2)
-    
-   
-    test_position3 = []
-    error3 = []
-    for i in range(1000):        
-        p = gn.select_modify_position_inversion()
-        #test_position3.append(p)
-        if  p[0] in untouchble or p[1] in untouchble:
-            error3.append(p)
-    return error3,test_position3
-    
-def check_mutation(gn,N = 1000):
-    '''Test 3 methods of genome modification
-    
-        Arguments:
-            gn(Genome): Genome instance
-            N(int): Nbr of modifications on a genome(N generation)
-    '''
-    mutation_list = []
-    for i in range(N):
-        mu = gn.mutation()
-        mutation_list.append(mu)
-    return mutation_list
 
-def check_modify_prot(gn, N=1000):
-    '''Verify if Genome.modify_prot is correct
-    
-    '''
-    #c = "inversion"
-    
-    '''
-    # check modify_prot function
-    for i in range(N):
-        #c = np.random.choice(['insert','delete','inversion'])
-        p1,p2 = 10,4000
-        #print(p1,p2)
-        gn.prot_posi = gn.modify_prot(c,posi1=p1,posi2=p2,length=60)
-        print(gn.prot_posi)
-    ''' 
-    # check mutation with adding modify_prot
-    print("original protine list:\n",gn.prot_posi)
-    mu_list = []
-    for i in range(N):
-        mu = gn.mutation()
-        #print(mu,gn.prot_posi)
-        mu_list.append(mu)
-    return mu_list
     
 def tousidentfile(gn1):
 	header=["##gff-version 3","#!gff-spec-version 1.20","#!processor NCBI annotwriter",
@@ -439,10 +355,10 @@ def tousidentfile(gn1):
 	)
 	for n in range(10):
 		if (gn1.gene_list[n].orientation==1):
-			base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" %(gn1.gene_list[n].start,gn1.gene_list[n].end,"+",gn1.gene_list[n].id)
+			base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" %(gn1.gene_list[n].start,gn1.gene_list[n].end,"+",gn1.gene_list[n].id-1)
             
 		else :
-			base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" %(gn1.gene_list[n].end,gn1.gene_list[n].start,"-",gn1.gene_list[n].id)
+			base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" %(gn1.gene_list[n].end,gn1.gene_list[n].start,"-",gn1.gene_list[n].id-1)
 		f.write(base)
 	f.close() 
 	#for TSS.DAT
@@ -453,10 +369,10 @@ def tousidentfile(gn1):
 		f2.write("\t%s" % header2[i])
 	for n in range(10): 
 		if (gn1.gene_list[n].orientation==1):
-			base="%s\t%s\t%s\t0.2\n" %(gn1.gene_list[n].id-1,"+", gn1.gene_list[n].start)
+			base="%s\t%s\t%s\t.2\n" %(gn1.gene_list[n].id-1,"+", gn1.gene_list[n].start)
 			f2.write(base)	
 		else :
-			base="%s\t%s\t%s\t0.2\n" %(gn1.gene_list[n].id-1, "-", gn1.gene_list[n].end)
+			base="%s\t%s\t%s\t.2\n" %(gn1.gene_list[n].id-1, "-", gn1.gene_list[n].end)
 			f2.write(base)	
 	f2.close()
 	#for TTS.dat
