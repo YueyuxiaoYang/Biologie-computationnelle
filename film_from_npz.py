@@ -6,8 +6,8 @@ import matplotlib
 matplotlib.rcParams.update({'font.size': 13})
 
 
-path()
-INI_file="params.ini"
+sys.path.append("C:/Users/Lily/Documents/GitHub/Biologie-computationnelle")
+INI_file="TCDS/params.ini"
 output_dir="output"
 
 output_dir_res = output_dir+"/all_res"
