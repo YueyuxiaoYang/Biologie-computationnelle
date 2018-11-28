@@ -432,7 +432,7 @@ def check_modify_prot(gn, N=1000):
 def tousidentfile(gn1):
 	header=["##gff-version 3","#!gff-spec-version 1.20","#!processor NCBI annotwriter",
 	"##sequence-region tousgenesidentiques 1 %d" % gn1.genome_len]
-	f= open("./input/tousgenesidentiques1.gff","w+")
+	f= open("./input/gff.gff","w+")
 	for i in range(len(header)):
 		f.write("%s\n" % header[i])
 	f.write("tousgenesidentiques\tRefSeq\tregion\t1\t%d\t.\t+\t.\tID=id0;Name=tousgenesidentiques\n" %  gn1.genome_len
