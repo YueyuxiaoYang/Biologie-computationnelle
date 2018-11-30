@@ -52,10 +52,11 @@ tousidentfile(gn1)
 sim.start_transcribing(INI_file, output_dir)
 gn1.cal_fitness()
 
+
 # mutation
 fit_list = []
 mutation_type = []
-for i in range(100):
+for i in range(20):
     mut = gn1.mutation()
     #gn1.display_genome()
     mutation_type.append(mut)
@@ -66,6 +67,7 @@ for i in range(100):
     except:
         print ('mutation type', mut)
         gn1.display_genome()
+        break
     f = gn1.cal_fitness()
     fit_list.append(gn1.fitness)
     

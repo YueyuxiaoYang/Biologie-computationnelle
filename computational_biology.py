@@ -252,7 +252,6 @@ class Genome:
         name_gene, start_gene, end_gene,orientation = [list(t) for t in zip(*g_list)]
         #print(name_gene, start_gene, end_gene,orientation)                
                
-        start_gene_i=min(start_gene)
         end_gene_i=max(end_gene)
         dist_gene=[]
         n=len(name_gene)#nombre de gene 
@@ -263,13 +262,13 @@ class Genome:
         name_gene = name_gene[::-1]
         dist_gene =dist_gene[::-1]
         	#ecrire la nouvelle premiere position (start et end) 
-        start_gene[0]= r_position1 + r_position2- end_gene_i
-        end_gene[0]= start_gene[0] + l
+        start_gene[0]= r_position1 + r_position2- end_gene_i        
         orientation[0]=  orientation[0]*(-1)
+        end_gene[0]= start_gene[0] + l*orientation[0]
         for i in range(1,n): 
-        		start_gene[i]= end_gene[i-1] + dist_gene[i-1]
-        		end_gene[i]= start_gene[i]+l 
-        		orientation[i]=  orientation[i]*(-1)
+            start_gene[i]= end_gene[i-1] + dist_gene[i-1]
+            orientation[i]=  orientation[i]*(-1)
+            end_gene[i]= start_gene[i]+l*orientation[i]    
         # --- end inversion ----
         
         gene_to_modify = list(zip(name_gene, start_gene, end_gene,orientation))
@@ -370,9 +369,10 @@ def tousidentfile(gn1):
 	for n in range(10):
 		if (gn1.gene_list[n].orientation==1):
 			orient="+"
+			base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].start)
 		else :
 			orient="-"
-		base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].start)
+			base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].end)
 		f2.write(base)	
 
 	f2.close()
@@ -385,9 +385,10 @@ def tousidentfile(gn1):
 	for n in range(10): 
 		if (gn1.gene_list[n].orientation==1):
 			orient="+"
+			base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].end)
 		else :
 			orient="-"
-		base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].end)
+			base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].start)
 		f3.write(base)	
 	f3.close()
 	#for prot.dat 
