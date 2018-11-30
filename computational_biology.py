@@ -27,6 +27,8 @@ class gene:
             end (int): end position.
             orientation (bool):  '+':1, '-':-1.
             length (int): in this project length is a constant=1000.
+        attention:
+            always start < end
     
     '''
     def __init__(self):
@@ -280,6 +282,62 @@ class Genome:
             g.orientation = gene_to_modify[i][3]
             
         return name_gene, start_gene, end_gene , orientation
+    def inversion_v2(self, posi1= None, posi2=None):
+        '''
+        '''
+        if posi1 == None or posi2 == None:
+            posi1,posi2 = self.select_modify_position_inversion() #!!! not rubust need to change
+            #print "delete position: "+str(r_position1)   
+        self.prot_posi = self.modify_prot(method="inversion", posi1=posi1,posi2=posi2)
+        
+        gene_l = [[g.id, g.start, g.end, g.orientation] for g in self.gene_list] # start, end and orientation
+        gene_l.sort(key=lambda x:x[1]) # sort by sstart position
+        
+        g_to_inv = [g for g in gene_l if g[1] > posi1 and g[2] < posi2]         
+        g_not_inv = [g for g in gene_l if g not in g_to_inv]
+        
+        id_l = [] # id list after sorting by start position
+        s_e_l = [posi1,] # start and end positions
+        ori_l = []
+        for x in g_to_inv:
+            id_l.append(x[0])
+            s_e_l.append(x[1])
+            s_e_l.append(x[2])
+            ori_l.append(x[3])
+        s_e_l.append(posi2)
+        
+        # inverse id;  orientation and  position will be update later
+        g_to_inv = g_to_inv[::-1]
+        #invert positions
+        g_dist = np.array(s_e_l)
+        g_dist = g_dist[1:] - g_dist[:-1]
+        g_dist = g_dist[::-1]
+        g_after_inv = posi1 + np.add.accumulate(g_dist) # inversion of positions complete
+        g_after_inv = g_after_inv[:-1] # delete posi2
+        
+        #print (g_after_inv)
+        
+        # save start and end positions
+        for i in range(len(g_to_inv)):
+            g_to_inv[i][1] = g_after_inv[i*2]
+            g_to_inv[i][2] = g_after_inv[i*2+1]
+            g_to_inv[i][3] = g_to_inv[i][3] * (-1)
+       
+        gene_l_after_inv = g_to_inv + g_not_inv
+        #print(gene_l_after_inv)
+        # sort gene list aftere inversion by id
+        gene_l_after_inv.sort(key=lambda x:x[0])
+        #print(gene_l_after_inv)
+        for i,g in enumerate([g for g in self.gene_list]):
+            g.start = gene_l_after_inv[i][1]
+            #print(i,g.start)
+            g.end = gene_l_after_inv[i][2]
+            g.orientation = gene_l_after_inv[i][3]
+        
+        
+       
+
+        
     
     def mutation(self):
         '''Randomly choose in/del or inversion for current genome, the result is next generation
@@ -294,7 +352,7 @@ class Genome:
                 self.delete()
                 mu = 2 #"delete"
         else: # inversion
-            self.inversion()
+            self.inversion_v2()
             mu = 3 #"inversion"
         
         return mu
@@ -357,7 +415,7 @@ def tousidentfile(gn1):
 			base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" %(gn1.gene_list[n].start,gn1.gene_list[n].end,"+",gn1.gene_list[n].id-1)
             
 		else :
-			base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" %(gn1.gene_list[n].start,gn1.gene_list[n].end,"-",gn1.gene_list[n].id-1)
+			base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" %(gn1.gene_list[n].end,gn1.gene_list[n].start,"-",gn1.gene_list[n].id-1)
 		f.write(base)
 	f.close() 
 	#for TSS.DAT
