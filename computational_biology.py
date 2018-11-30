@@ -358,7 +358,7 @@ def tousidentfile(gn1):
 			base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" %(gn1.gene_list[n].start,gn1.gene_list[n].end,"+",gn1.gene_list[n].id-1)
             
 		else :
-			base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" %(gn1.gene_list[n].end,gn1.gene_list[n].start,"-",gn1.gene_list[n].id-1)
+			base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" %(gn1.gene_list[n].start,gn1.gene_list[n].end,"-",gn1.gene_list[n].id-1)
 		f.write(base)
 	f.close() 
 	#for TSS.DAT
@@ -367,13 +367,14 @@ def tousidentfile(gn1):
 	f2.write("%s" % header2[0])
 	for i in range(1,len(header2)): 
 		f2.write("\t%s" % header2[i])
-	for n in range(10): 
+	for n in range(10):
 		if (gn1.gene_list[n].orientation==1):
-			base="%s\t%s\t%s\t.2\n" %(gn1.gene_list[n].id-1,"+", gn1.gene_list[n].start)
-			f2.write(base)	
+			orient="+"
 		else :
-			base="%s\t%s\t%s\t.2\n" %(gn1.gene_list[n].id-1, "-", gn1.gene_list[n].end)
-			f2.write(base)	
+			orient="-"
+		base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].start)
+		f2.write(base)	
+
 	f2.close()
 	#for TTS.dat
 	header3=["TUindex","TUorient","TTS_pos","TTS_proba_off\n"]
@@ -383,11 +384,11 @@ def tousidentfile(gn1):
 		f3.write("\t%s" % header3[i])
 	for n in range(10): 
 		if (gn1.gene_list[n].orientation==1):
-			base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, "+", gn1.gene_list[n].end)
-			f3.write(base)	
+			orient="+"
 		else :
-			base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, "-", gn1.gene_list[n].start)
-			f3.write(base)	
+			orient="-"
+		base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].end)
+		f3.write(base)	
 	f3.close()
 	#for prot.dat 
 	header4=["prot_name","prot_pos\n"]
