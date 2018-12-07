@@ -6,7 +6,7 @@ Created on Tue Nov 20 14:54:28 2018
 """
 
 import sys
-import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 #sys.path.append('/home/yyang1/Bureau/Biologie-computationnelle/') 
 import simulation as sim 
@@ -50,16 +50,18 @@ gn1.gene_list=gene_list
 tousidentfile(gn1)
 # first generation
 sim.start_transcribing(INI_file, output_dir)
-gn1.cal_fitness()
+#gn1.cal_fitness()
 
 
 # mutation
 fit_list = []
 mutation_type = []
 for i in range(20):
+    gn_before=gn1 
     mut = gn1.mutation()
     #gn1.display_genome()
     mutation_type.append(mut)
+    gn1.sort_by_start_posi()
     tousidentfile(gn1)
     try:
         print("mutation type =",mut)
@@ -68,7 +70,22 @@ for i in range(20):
         print ('mutation type', mut)
         gn1.display_genome()
         break
-    f = gn1.cal_fitness()
+    f = gn1.call_fitness(gn1)
+    f_before=gn1.call_fitness(gn_before)
+    #monte carlo
+    T=1/(i+1)
+    r=gn1.monte_carlo(f_before,f,gn_before,T)
+    print(r)
+    if r==0: 
+        gn1.gene_list=gn_before.gene_list
+        print(r)
+    
     fit_list.append(gn1.fitness)
-    
-    
+
+
+np.savetxt('fitness.output', fit_list)    
+np.savetxt('mutation.output', mutation_type)    
+
+plt.plot(fit_list)
+plt.show()  
+

@@ -357,16 +357,27 @@ class Genome:
         
         return mu
     
-    def cal_fitness(self):
+    def call_fitness(self,gn):
         obs = np.genfromtxt('output/save_tr_nbr.csv')
         obs = obs/sum(obs)
-        fitness = np.exp(-1*sum(np.abs(obs-self.fit_exp)/self.fit_exp))
-        self.fitness = fitness
-        return self.fitness
+        fitness = np.exp(-1*sum(np.abs(obs-gn.fit_exp)/gn.fit_exp))
+        gn.fitness = fitness
+        return gn.fitness
     
     def sort_by_start_posi(self):
         gl = self.gene_list
         gl.sort(key = lambda x: x.start)    
+    
+    def monte_carlo(self,f_before,f2,gn_before,T): 
+        if f2<f_before : 
+            p= np.exp(-1/(1000*T)) ##### mettre la bonne formule
+            r=np.random.binomial(1,p)
+        else : 
+            r=1
+        return r 
+                
+            
+            
         
     
 '''
