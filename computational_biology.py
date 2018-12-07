@@ -364,6 +364,10 @@ class Genome:
         self.fitness = fitness
         return self.fitness
     
+    def sort_by_start_posi(self):
+        gl = self.gene_list
+        gl.sort(key = lambda x: x.start)    
+        
     
 '''
 We can not draw genome in 5Bim's computer, however, you can try AWS-C9, a online virtual IDE
