@@ -370,7 +370,9 @@ class Genome:
     
     def monte_carlo(self,f_before,f2,gn_before,T): 
         if f2<f_before : 
-            p= np.exp(-1/(1000*T)) ##### mettre la bonne formule
+            #p= np.exp(-1/(1000*T))
+            k=1
+            p= np.exp(f_before-f2/-k*T)##### mettre la bonne formule
             r=np.random.binomial(1,p)
         else : 
             r=1

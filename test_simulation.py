@@ -56,7 +56,7 @@ sim.start_transcribing(INI_file, output_dir)
 # mutation
 fit_list = []
 mutation_type = []
-for i in range(20):
+for i in range(100):
     gn_before=gn1 
     mut = gn1.mutation()
     #gn1.display_genome()
