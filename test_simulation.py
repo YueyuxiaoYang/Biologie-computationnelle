@@ -38,7 +38,7 @@ for g in genes:
     else:
         a.orientation = -1
     gene_list.append(a)    
-
+'''
 def plot_fitness(fit_list, mutation_type):
     f = np.array(fit_list)
     #markers = {1:'v', 2:'P', 3:'o'}
@@ -54,7 +54,7 @@ def plot_fitness(fit_list, mutation_type):
     plt.scatter(inv,f[inv],marker='o',c='green',label='inv')
     plt.legend()
     plt.show()
-    
+'''
 # ----- do some modification
 
 #the prob. ratio between insertion/deletion and inversion.
@@ -62,10 +62,14 @@ id_inv_ratio = [1/100,1/50, 1/10, 1, 10/1, 50/1, 100/1, 500/1, 1000/1, 10000/1] 
 T0 = 0.00001
 idL = 60
 name = str(1) # paralell
-iter_num = 10 # number of generations for one genome
+iter_num = 1000 # number of generations for one genome
+rep_num = 5
+fit_total = []
+name_total = []
+mutation_total = []
 
 for ratio in id_inv_ratio:
-    for rep in range(5):
+    for rep in range(rep_num):
         gn1 = Genome()
         gn1.T0 = T0
         gn1.gene_list=gene_list
@@ -110,11 +114,17 @@ for ratio in id_inv_ratio:
                 print(r)
             
             fit_list.append(gn1.fitness)
+        fit_total.append(fit_list)
+        mutation_total.append(mutation_type)
+        name_total.append("T(%s)_idL(%s)_ratio(%s)_rep(%s)" %(T0,idL,ratio,rep))
             #plot_fitness(fit_list,mutation_type)
             #g_list.append(gn1.gene_list)
         #save files
         np.savetxt("./parameters_test/ratio/fitness_T(%s)_idL(%s)_ratio(%s)_rep(%s).output" %(T0,idL,ratio,rep), fit_list)    
         np.savetxt("./parameters_test/ratio/mutation_T(%s)_idL(%s)_ratio(%s)_rep(%s).output" %(T0,idL,ratio,rep), mutation_type)    
+        np.savetxt("./parameters_test/ratio/fit_total.output", fit_total) 
+        np.savetxt("./parameters_test/ratio/mutation_total.output", mutation_total)
+        #np.savetxt("./parameters_test/ratio/name_total.output", name_total)
         #np.savetxt("./parameters_test/ratio/genelist_T(%s)_idL(%s)_ratio(%s)_rep(%s).output" %(T0,idL,ratio,rep), g_list)    
         
 
