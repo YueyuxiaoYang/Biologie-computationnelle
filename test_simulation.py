@@ -6,7 +6,7 @@ Created on Tue Nov 20 14:54:28 2018
 """
 
 import sys
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import numpy as np
 #sys.path.append('/home/yyang1/Bureau/Biologie-computationnelle/') 
 import simulation as sim 
