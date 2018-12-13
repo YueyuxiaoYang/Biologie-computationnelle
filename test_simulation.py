@@ -110,7 +110,7 @@ for ratio in id_inv_ratio:
                 print(r)
             
             fit_list.append(gn1.fitness)
-            plot_fitness(fit_list,mutation_type)
+            #plot_fitness(fit_list,mutation_type)
             #g_list.append(gn1.gene_list)
         #save files
         np.savetxt("./parameters_test/ratio/fitness_T(%s)_idL(%s)_ratio(%s)_rep(%s).output" %(T0,idL,ratio,rep), fit_list)    
