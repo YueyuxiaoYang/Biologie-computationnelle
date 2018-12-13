@@ -64,7 +64,7 @@ idL = 60
 name = str(1) # paralell
 iter_num = 10 # number of generations for one genome
 
-for ratio in id_inv_ratio[:2]:
+for ratio in id_inv_ratio:
     for rep in range(5):
         gn1 = Genome()
         gn1.T0 = T0
