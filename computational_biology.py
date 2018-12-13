@@ -68,6 +68,7 @@ class Genome:
         self.prot_posi = [1,3001,6001,9001,12001,15001,18001,21001,24001,27001] # initial, need to modify
         self.fitness = 0
         self.fit_exp = np.array([0.036,0.036,0.273,0.091,0.091,0.091,0.018,0.045,0.045,0.273])
+        self.T0 = 0.00001 # how likely accept the 'worse' fitness value
     def display_genome(self):
         ''' display every gene in the genome 
         '''
@@ -357,22 +358,25 @@ class Genome:
         
         return mu
     
-    def call_fitness(self,gn):
-        obs = np.genfromtxt('output/save_tr_nbr.csv')
+    def call_fitness(self,name=''):
+        obs = np.genfromtxt('output'+name+'/save_tr_nbr.csv')
         obs = obs/sum(obs)
-        fitness = np.exp(-1*sum(np.abs(obs-gn.fit_exp)/gn.fit_exp))
-        gn.fitness = fitness
-        return gn.fitness
+        fitness = np.exp(-1*sum(np.abs(obs-self.fit_exp)/self.fit_exp))
+        self.fitness = fitness
+        return self.fitness
     
     def sort_by_start_posi(self):
         gl = self.gene_list
         gl.sort(key = lambda x: x.start)    
     
-    def monte_carlo(self,f_before,f2,gn_before,T): 
-        if f2<f_before : 
+    def monte_carlo(self,gn_new): 
+        f_before = self.fitness
+        f_new = gn_new.fitness
+        if f_new<f_before : 
             #p= np.exp(-1/(1000*T))
-            k=1
-            p= np.exp(f_before-f2/-k*T)##### mettre la bonne formule
+            #k=1
+            p= np.exp(-1*(f_before-f_new)/self.T0)##### mettre la bonne formule
+            #p = 0.1
             r=np.random.binomial(1,p)
         else : 
             r=1
@@ -419,63 +423,61 @@ for g in gene_list:
 
 
     
-def tousidentfile(gn1):
-	header=["##gff-version 3","#!gff-spec-version 1.20","#!processor NCBI annotwriter",
+def tousidentfile(gn1,name=''):
+    header=["##gff-version 3","#!gff-spec-version 1.20","#!processor NCBI annotwriter",
 	"##sequence-region tousgenesidentiques 1 %d" %gn1.genome_len]
-	f= open("./input/gff.gff","w+")
-	for i in range(len(header)):
-		f.write("%s\n" % header[i])
-	f.write("tousgenesidentiques\tRefSeq\tregion\t1\t%d\t.\t+\t.\tID=id0;Name=tousgenesidentiques\n" %gn1.genome_len
-	)
-	for n in range(10):
-		if (gn1.gene_list[n].orientation==1):
-			base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" %(gn1.gene_list[n].start,gn1.gene_list[n].end,"+",gn1.gene_list[n].id-1)
-            
-		else :
-			base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" %(gn1.gene_list[n].end,gn1.gene_list[n].start,"-",gn1.gene_list[n].id-1)
-		f.write(base)
-	f.close() 
+    f= open("./input"+name+"/gff.gff","w+")
+    for i in range(len(header)):
+        f.write("%s\n" % header[i])
+    f.write("tousgenesidentiques\tRefSeq\tregion\t1\t%d\t.\t+\t.\tID=id0;Name=tousgenesidentiques\n" %gn1.genome_len)
+    for n in range(10):
+        if (gn1.gene_list[n].orientation==1):
+            base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" %(gn1.gene_list[n].start,gn1.gene_list[n].end,"+",gn1.gene_list[n].id-1)            
+        else :
+            base="tousgenesidentiques\tRefSeq\tgene\t%s\t%s\t.\t%s\t.\tID=g1;Name=g%s\n" %(gn1.gene_list[n].end,gn1.gene_list[n].start,"-",gn1.gene_list[n].id-1)
+        f.write(base)
+    f.close() 
 	#for TSS.DAT
-	header2=["TUindex","TUorient","TSS_pos","TSS_strength\n"]
-	f2=open("./input/TSS.dat","w+")
-	f2.write("%s" % header2[0])
-	for i in range(1,len(header2)): 
-		f2.write("\t%s" % header2[i])
-	for n in range(10):
-		if (gn1.gene_list[n].orientation==1):
-			orient="+"
-			base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].start)
-		else :
-			orient="-"
-			base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].end)
-		f2.write(base)	
+    header2=["TUindex","TUorient","TSS_pos","TSS_strength\n"]
+    f2=open("./input"+name+"/TSS.dat","w+")
+    f2.write("%s" % header2[0])
+    for i in range(1,len(header2)): 
+        f2.write("\t%s" % header2[i])
+    for n in range(10):
+        if (gn1.gene_list[n].orientation==1):
+            orient="+"
+            base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].start)
+        else :
+            orient="-"
+            base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].end)
+        f2.write(base)	
 
-	f2.close()
+    f2.close()
 	#for TTS.dat
-	header3=["TUindex","TUorient","TTS_pos","TTS_proba_off\n"]
-	f3=open("./input/TTS.dat","w+")
-	f3.write("%s" % header3[0])
-	for i in range(1,len(header3)): 
-		f3.write("\t%s" % header3[i])
-	for n in range(10): 
-		if (gn1.gene_list[n].orientation==1):
-			orient="+"
-			base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].end)
-		else :
-			orient="-"
-			base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].start)
-		f3.write(base)	
-	f3.close()
+    header3=["TUindex","TUorient","TTS_pos","TTS_proba_off\n"]
+    f3=open("./input"+name+"/TTS.dat","w+")
+    f3.write("%s" % header3[0])
+    for i in range(1,len(header3)): 
+        f3.write("\t%s" % header3[i])
+    for n in range(10): 
+        if (gn1.gene_list[n].orientation==1):
+            orient="+"
+            base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].end)
+        else :
+            orient="-"
+            base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].start)
+        f3.write(base)	
+    f3.close()
 	#for prot.dat 
-	header4=["prot_name","prot_pos\n"]
-	f4=open("./input/prot.dat","w+")	
-	f4.write("%s" % header4[0])
-	for i in range(1,len(header4)): 
-		f4.write("\t%s" % header4[i])	
-	for n in range(10): 
-		base="hns\t%s\n" %(gn1.prot_posi[n])
-		f4.write(base)
-	f4.close()	
+    header4=["prot_name","prot_pos\n"]
+    f4=open("./input"+name+"/prot.dat","w+")	
+    f4.write("%s" % header4[0])
+    for i in range(1,len(header4)): 
+        f4.write("\t%s" % header4[i])	
+    for n in range(10): 
+        base="hns\t%s\n" %(gn1.prot_posi[n])
+        f4.write(base)
+    f4.close()	
 	
         
 if __name__ == "__main__":    
