@@ -136,7 +136,4 @@ for rep in range(rep_num):
         np.savetxt("./parameters_test/ratio/name_total.output", name_total, delimiter=" ", fmt="%s")
         #np.savetxt("./parameters_test/ratio/genelist_T(%s)_idL(%s)_ratio(%s)_rep(%s).output" %(T0,idL,ratio,rep), g_list)    
         
-#plot_total_fit(fit_total,name_total)
-#plt.plot(fit_list)
-#plt.show()  
 
