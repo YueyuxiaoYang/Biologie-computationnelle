@@ -67,9 +67,12 @@ def plot_total_fit(fit_total, name_total):
 # ----- do some modification
 
 #the prob. ratio between insertion/deletion and inversion.
-id_inv_ratio = [1/100,1/50, 1/10, 1, 10/1, 50/1, 100/1, 500/1, 1000/1, 10000/1] #
+#id_inv_ratio = [1/100,1/50, 1/10, 1, 10/1, 50/1, 100/1, 500/1, 1000/1, 10000/1] #
+idL_list = [20, 40, 60, 80, 100, 120, 140, 200, 400, 800]
+
+ratio = 1
 T0 = 0.000001
-idL = 60
+#idL = 60
 name = str(1) # paralell
 iter_num = 500 # number of generations for one genome
 rep_num = 5
@@ -78,9 +81,10 @@ name_total = []
 mutation_total = []
 
 for rep in range(rep_num):
-    for ratio in id_inv_ratio:
+    for idL in idL_list:
         gn1 = Genome()
         gn1.T0 = T0
+        gn1.idL = idL
         gn1.gene_list=gene_list
         gn1.change_rate = ratio
         
@@ -131,9 +135,9 @@ for rep in range(rep_num):
         #save files
         #np.savetxt("./parameters_test/ratio/fitness_T(%s)_idL(%s)_ratio(%s)_rep(%s).output" %(T0,idL,ratio,rep), fit_list)    
         #np.savetxt("./parameters_test/ratio/mutation_T(%s)_idL(%s)_ratio(%s)_rep(%s).output" %(T0,idL,ratio,rep), mutation_type)    
-        np.savetxt("./parameters_test/ratio/fit_total.output", fit_total) 
-        np.savetxt("./parameters_test/ratio/mutation_total.output", mutation_total)
-        np.savetxt("./parameters_test/ratio/name_total.output", name_total, delimiter=" ", fmt="%s")
+        np.savetxt("./parameters_test/len/fit_total.output", fit_total) 
+        np.savetxt("./parameters_test/len/mutation_total.output", mutation_total)
+        np.savetxt("./parameters_test/len/name_total.output", name_total, delimiter=" ", fmt="%s")
         #np.savetxt("./parameters_test/ratio/genelist_T(%s)_idL(%s)_ratio(%s)_rep(%s).output" %(T0,idL,ratio,rep), g_list)    
         
 

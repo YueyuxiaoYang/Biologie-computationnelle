@@ -69,6 +69,7 @@ class Genome:
         self.fitness = 0
         self.fit_exp = np.array([0.036,0.036,0.273,0.091,0.091,0.091,0.018,0.045,0.045,0.273])
         self.T0 = 0.00001 # how likely accept the 'worse' fitness value
+        self.idL = 60 # length of insertion and deletion
     def display_genome(self):
         ''' display every gene in the genome 
         '''
@@ -76,13 +77,14 @@ class Genome:
             g.display()
             
     
-    def insert(self, position=None,insert_len=60):
+    def insert(self, position=None):
         '''insert a sequence in the genome
        
            Arguments:
                position (int/int list): insert position, defaut random choose
                insert_len (int): the length of insertion, defaut=60
        '''
+        insert_len = self.idL
        # if  there is no input position, random choose one 
         if position == None:
            r_position = self.select_modify_position_insert()
@@ -101,13 +103,14 @@ class Genome:
         self.prot_posi = self.modify_prot(method="insert", posi1=r_position,length=insert_len)
         
     
-    def delete(self, position=None, delete_len=60):
+    def delete(self, position=None):
         '''delete a sequence in the genome
        
            Arguments:
                position (int): delete position, defaut random choose
                delete_len (int): the length of deletion, defaut=60
        '''
+        delete_len = self.idL
         if position == None:
            r_position = self.select_modify_position_delete(delete_len) 
            #print ("delete position: "+str(r_position))
