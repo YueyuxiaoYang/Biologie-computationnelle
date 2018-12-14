@@ -54,6 +54,15 @@ def plot_fitness(fit_list, mutation_type):
     plt.scatter(inv,f[inv],marker='o',c='green',label='inv')
     plt.legend()
     plt.show()
+
+
+def plot_total_fit(fit_total, name_total):
+    f = np.array(fit_total)
+    n = name_total
+    for i,name in enumerate(n):
+        plt.plot(range(len(f[i])), f[i],label=name)
+    plt.legend()
+    plt.savefig('1')
 '''
 # ----- do some modification
 
@@ -62,7 +71,7 @@ id_inv_ratio = [1/100,1/50, 1/10, 1, 10/1, 50/1, 100/1, 500/1, 1000/1, 10000/1] 
 T0 = 0.00001
 idL = 60
 name = str(1) # paralell
-iter_num = 1000 # number of generations for one genome
+iter_num = 500 # number of generations for one genome
 rep_num = 5
 fit_total = []
 name_total = []
@@ -108,10 +117,10 @@ for ratio in id_inv_ratio:
             #monte carlo
             T=1/(i+1)
             r=gn1.monte_carlo(gn_new)
-            print(r)
+            print("iter: ratio=%s, rep=%s, generation=%s"%(ratio,rep,i))
             if r==1: # changer 
                 gn1 = gn_new
-                print(r)
+                print('gnome changed')
             
             fit_list.append(gn1.fitness)
         fit_total.append(fit_list)
@@ -120,14 +129,14 @@ for ratio in id_inv_ratio:
             #plot_fitness(fit_list,mutation_type)
             #g_list.append(gn1.gene_list)
         #save files
-        np.savetxt("./parameters_test/ratio/fitness_T(%s)_idL(%s)_ratio(%s)_rep(%s).output" %(T0,idL,ratio,rep), fit_list)    
-        np.savetxt("./parameters_test/ratio/mutation_T(%s)_idL(%s)_ratio(%s)_rep(%s).output" %(T0,idL,ratio,rep), mutation_type)    
+        #np.savetxt("./parameters_test/ratio/fitness_T(%s)_idL(%s)_ratio(%s)_rep(%s).output" %(T0,idL,ratio,rep), fit_list)    
+        #np.savetxt("./parameters_test/ratio/mutation_T(%s)_idL(%s)_ratio(%s)_rep(%s).output" %(T0,idL,ratio,rep), mutation_type)    
         np.savetxt("./parameters_test/ratio/fit_total.output", fit_total) 
         np.savetxt("./parameters_test/ratio/mutation_total.output", mutation_total)
-        #np.savetxt("./parameters_test/ratio/name_total.output", name_total)
+        np.savetxt("./parameters_test/ratio/name_total.output", name_total, delimiter=" ", fmt="%s")
         #np.savetxt("./parameters_test/ratio/genelist_T(%s)_idL(%s)_ratio(%s)_rep(%s).output" %(T0,idL,ratio,rep), g_list)    
         
-
+#plot_total_fit(fit_total,name_total)
 #plt.plot(fit_list)
 #plt.show()  
 
