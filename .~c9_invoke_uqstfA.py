@@ -68,7 +68,7 @@ def plot_total_fit(fit_total, name_total):
 
 #the prob. ratio between insertion/deletion and inversion.
 id_inv_ratio = [1/100,1/50, 1/10, 1, 10/1, 50/1, 100/1, 500/1, 1000/1, 10000/1] #
-T0 = 0.00001
+T0 = 0.000001
 idL = 60
 name = str(1) # paralell
 iter_num = 500 # number of generations for one genome
