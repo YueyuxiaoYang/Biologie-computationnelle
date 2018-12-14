@@ -77,8 +77,8 @@ fit_total = []
 name_total = []
 mutation_total = []
 
-for ratio in id_inv_ratio:
-    for rep in range(rep_num):
+for rep in range(rep_num):
+    for ratio in id_inv_ratio:
         gn1 = Genome()
         gn1.T0 = T0
         gn1.gene_list=gene_list
