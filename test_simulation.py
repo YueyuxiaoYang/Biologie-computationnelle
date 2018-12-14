@@ -121,7 +121,7 @@ for rep in range(rep_num):
             #monte carlo
             T=1/(i+1)
             r=gn1.monte_carlo(gn_new)
-            print("iter: ratio=%s, rep=%s, generation=%s"%(ratio,rep,i))
+            print("iter: idL=%s, ratio=%s, rep=%s, generation=%s"%(idL,ratio,rep,i))
             if r==1: # changer 
                 gn1 = gn_new
                 print('gnome changed')
