@@ -70,7 +70,7 @@ def plot_total_fit(fit_total, name_total):
 #id_inv_ratio = [1/100,1/50, 1/10, 1, 10/1, 50/1, 100/1, 500/1, 1000/1, 10000/1] #
 idL_list = [20, 40, 60, 80, 100, 120, 140, 200, 400, 800]
 
-ratio = 10
+ratio = 0.1
 T0 = 0.000001
 #idL = 60
 name = str(1) # paralell
