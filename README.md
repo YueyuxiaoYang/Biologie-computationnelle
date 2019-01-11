@@ -19,7 +19,15 @@ https://github.com/bilalelhoudaigui/TCDS-v2
   --> taille des modifications 
   --> nbre ARNpol 
 
-#choix des graphes (4 attention) : un graphe avec paramètres initiaux (effet modifications chromosomiques et fitness faible), le génome final, mettre un graphe avec les paramètres optimaux, un graphe avec plusieurs graphes combinés.
+#choix des graphes (4 attention) : un graphe avec paramètres initiaux (effet modifications chromosomiques et fitness faible), le génome final ,mettre un graphe avec les paramètres optimaux, un graphe avec plusieurs graphes combinés.
+
 
 #écire la définition de la fonction inversion 
-  
+
+
+
+
+#### le 11 janvier 
+#simulations lancées : température et nombre ARNpoly : faire les graphes correspondants 
+#écrire la définition de la fonction inversion 
+# faire le graphe du génome final, graphe avec les paramètres optimaux 
