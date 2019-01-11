@@ -30,4 +30,4 @@ https://github.com/bilalelhoudaigui/TCDS-v2
 #### le 11 janvier 
 #simulations lancées : température et nombre ARNpoly : faire les graphes correspondants 
 #écrire la définition de la fonction inversion 
-# faire le graphe du génome final, graphe avec les paramètres optimaux 
+#faire le graphe du génome final, graphe avec les paramètres optimaux 
