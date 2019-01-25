@@ -9,12 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 import re
-sys.path.append('/home/yyang1/Bureau/Biologie-computationnelle/') 
-from computational_biology import *
 
-
-sys.path.append('/home/yyang1/Bureau/Biologie-computationnelle/')
-sys.path.append('/home/yyang1/Bureau/Biologie-computationnelle/parameters_test/ratio/')
 
 def plot_fitness(fit_list, mutation_type):
     f = np.array(fit_list)
@@ -106,19 +101,10 @@ def plot_max2(fit,mut,name,para,rep=5):
     plt.ylabel('Max fitness value in 500 generations')
     plt.show()
     
-# read results
-'''
-f_path = '/home/yyang1/Bureau/exp_data_Sam/ratio/'
-f_path1 = '/home/yyang1/Bureau/exp_data_Sam/len/'
-f_path2 = '/home/yyang1/Bureau/Biologie-computationnelle/parameters_test/initial/'
-f_path4 = '/home/yyang1/Bureau/exp_data_Sam/T0/'
-fit = np.loadtxt(f_path4+'fit_total.output')
-mut = np.loadtxt(f_path4+'./mutation_total.output')
-name = np.genfromtxt(f_path4+'./name_total.output',dtype='str')
-'''
+
 
 #plot len
-f_path1 = '/home/yyang1/Bureau/exp_data_Sam/len/'
+f_path1 = './result_data/len/'
 fit = np.loadtxt(f_path1+'fit_total.output')
 mut = np.loadtxt(f_path1+'./mutation_total.output')
 name = np.genfromtxt(f_path1+'./name_total.output',dtype='str')
@@ -126,7 +112,7 @@ plot_max2(fit,mut,name,para='idL')
 plot_total_fit(fit,name,para='idL',rep=5)
 
 # ratio
-f_path2 = '/home/yyang1/Bureau/exp_data_Sam/ratio/'
+f_path2 = './result_data/ratio/'
 fit = np.loadtxt(f_path2+'fit_total.output')
 mut = np.loadtxt(f_path2+'./mutation_total.output')
 name = np.genfromtxt(f_path2+'./name_total.output',dtype='str')
@@ -136,7 +122,7 @@ tm = time_reach_max(fit,name)
 plt.boxplot(tm)
 
 # T0 test 2 
-f_path4 = '/home/yyang1/Bureau/exp_data_Sam/T0/'
+f_path4 = './result_data/T0/'
 fit = np.loadtxt(f_path4+'fit_total.output')
 mut = np.loadtxt(f_path4+'./mutation_total.output')
 name = np.genfromtxt(f_path4+'./name_total.output',dtype='str')
@@ -145,7 +131,7 @@ plot_total_fit(fit,name,para='T0',rep=5)
 
 # plot poly
 # error fitness = -1
-f_path5 = '/home/yyang1/Bureau/exp_data_Sam/poly/'
+f_path5 = './result_data/poly/'
 fit = np.loadtxt(f_path5+'fit_total3.output')
 mut = np.loadtxt(f_path5+'./mutation_total3.output')
 name = np.genfromtxt(f_path5+'./name_total3.output',dtype='str')
@@ -154,7 +140,7 @@ plot_max2(fit,mut,name,para='poly')
 for f in fit :
     for i in range(len(f)):
         if f[i] == -1:
-            f[i] = 0.0024
+            f[i] = 0
 
 plot_total_fit(fit,name,para='poly',rep=5)
 #plot_total_fit(fit_total,name_total)
@@ -162,7 +148,7 @@ plot_total_fit(fit,name,para='poly',rep=5)
 #plt.show()  
 
 # opt
-f_path6 = '/home/yyang1/Bureau/exp_data_Sam/opt/'
+f_path6 = './result_data/opt/'
 fit = np.loadtxt(f_path6+'fit_total4.output')
 mut = np.loadtxt(f_path6+'./mutation_total4.output')
 name = np.genfromtxt(f_path6+'./name_total4.output',dtype='str')
