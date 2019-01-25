@@ -107,6 +107,7 @@ def plot_max2(fit,mut,name,para,rep=5):
     plt.show()
     
 # read results
+'''
 f_path = '/home/yyang1/Bureau/exp_data_Sam/ratio/'
 f_path1 = '/home/yyang1/Bureau/exp_data_Sam/len/'
 f_path2 = '/home/yyang1/Bureau/Biologie-computationnelle/parameters_test/initial/'
@@ -114,6 +115,7 @@ f_path4 = '/home/yyang1/Bureau/exp_data_Sam/T0/'
 fit = np.loadtxt(f_path4+'fit_total.output')
 mut = np.loadtxt(f_path4+'./mutation_total.output')
 name = np.genfromtxt(f_path4+'./name_total.output',dtype='str')
+'''
 
 #plot len
 f_path1 = '/home/yyang1/Bureau/exp_data_Sam/len/'
@@ -168,62 +170,6 @@ plt.plot(fit[0])
 plt.xlabel('generations')
 plt.ylabel('fitness')
 plt.title('fitness evolution with optimal parameters ')
-#We can not draw genome in 5Bim's computer, however, you can try AWS-C9, a online virtual IDE
-from Bio.SeqFeature import SeqFeature, FeatureLocation
-from Bio.Graphics import GenomeDiagram
-from reportlab.lib.units import cm
-def draw_genome(genome):
-    
-    g_list = genome.gene_list
-    p_list = genome.prot_posi
-    gdd = GenomeDiagram.Diagram('Test Diagram')
-    gdt_features = gdd.new_track(1, greytrack=False) 
-    gds_features = gdt_features.new_set()
-    #Add three features to show the strand options,
-    for g in g_list:
-        feature = SeqFeature(FeatureLocation(g.start, g.end), strand=g.orientation)
-        gds_features.add_feature(feature, name='gene'+str(g.id), label=True) #care for name
-    
-    for p in p_list:
-        feature = SeqFeature(FeatureLocation(p, p+10))                                  
-        gds_features.add_feature(feature,color='red',label=True,name='Protein position')
-    
-    # use feature _set   
-    
-    gdd.draw(format="circular", circular=True,circle_core=0.7, pagesize=(20*cm,20*cm),
-             start=1, end=genome.genome_len) # careful for the length of genome
-    #gdd.write("GD_labels_default.pdf", "pdf") 
-    
-def read_Genome(path,file_name):    
-    data  = open(path+file_name, 'r')
-    lines = data.readlines()
-    genes = []
-    for l in lines:
-        genes.append(l.split())
-    
-    data.close()
-    genes = genes[5:-1]
-    # save genes in a list [class_gene, ....]
-    gene_list = [] # data structure for saving initial genome
-    for g in genes:
-        a = gene()
-        a.id = int(g[-1][12:])
-        a.start = int(g[3])
-        a.end = int(g[4])
-        if  g[-3] == '+':
-            a.orientation = 1
-        else:
-            a.orientation = -1
-        gene_list.append(a)   
-    gn1 = Genome()
-    gn1.gene_list=gene_list
-    return gn1
-
-f_path6 = '/home/yyang1/Bureau/exp_data_Sam/opt/'
-file_name = 'gff.gff'
-gn1 = read_Genome(f_path6,file_name) 
-
-
 
 
 
