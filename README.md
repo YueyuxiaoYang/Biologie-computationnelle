@@ -2,49 +2,33 @@
 Projet Sam Mayer
 https://github.com/bilalelhoudaigui/TCDS-v2
 
-## Lancer une simulation
-Dans le fichier test_simulation.py il faut choisir les paramètres suivants:
+Le code suivante 
 
+## Lancer une simulation
+
+# Paramètres
+Dans le fichier test_simulation.py il faut choisir les paramètres suivants:
 Le génome initial doit avoir le format gff et il faut changer le nom du fichier dans "input Genome information".
 
 ratio= Pour espécifier le ration des insertions/deletions / inversions il faut. 0.1 signifie qu'il y a 1 insertion/deletion sur 10 inversions. 
 T0= est la température pour l'algorithme de Montecarlo.
 idl= est la longueur des insertions/deletions
-iter_num= est le nombre de generations du genome
-rep_num= est le nombre de repetitions d'un simulation
+iter_num= est le nombre de générations du génome
+rep_num= est le nombre de répétitions d'un simulation
 
 INI_file= le nom du fichier params.ini du package TCDS.
 
 Si vous voudriez tester plusieurs paramètres vous pouvez changer la variable T0_list avec les différentes valeurs à tester.
+Dans ce cas là nous avons testé différentes valeurs de tempétature.
 
+Pour lancer le code il faut lancer le fichier test_simulations.py
 
+Les fichiers input gff et params.ini doivent être placés dans le même dossier du test_simulations.py
 
-## mise à jour du 28 novembre 
-## à faire 
-1. save_tr_nbr does not change after modification of the Genome
-1. sometimes simulation 'input' can not read all the genes.
-1. visualize fitness to trace fitness value changing according to time
-1. paralell computing for more than 1 genome at a time
+## Fichiers du sortie
 
+fit_total.output : fichier avec la fitness au cours des générations du génome.
+mutation_total.output : fichier avec l'information des mutations et des inversions au cours des générations.
+name_total.output : fichier avec l'information des paramétres de la simulation.
 
-####le 19 décembre 
-#simulations à faire : 
-  --> des résultats avec les paramètres initiaux : T=0.1, len=60 nucléotides,  ratio=1, nbre ARNpol=6
-  --> simulation qui change le nbre d'ARNpol
-
-#analyser les résultats : 
-  --> taille des modifications 
-  --> nbre ARNpol 
-
-#choix des graphes (4 attention) : un graphe avec paramètres initiaux (effet modifications chromosomiques et fitness faible), le génome final ,mettre un graphe avec les paramètres optimaux, un graphe avec plusieurs graphes combinés.
-
-
-#écire la définition de la fonction inversion 
-
-
-
-
-#### le 11 janvier 
-#simulations lancées : température et nombre ARNpoly : faire les graphes correspondants 
-#écrire la définition de la fonction inversion 
-#faire le graphe du génome final, graphe avec les paramètres optimaux 
+Pour modifier le noms des fichiers ou le nom du dossier de sortie vous pouvez les changer à la fin du code test_simulations.py
