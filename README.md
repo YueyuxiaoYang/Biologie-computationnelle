@@ -9,7 +9,14 @@ Le génome initial doit avoir le format gff et il faut changer le nom du fichier
 
 ratio= Pour espécifier le ration des insertions/deletions / inversions il faut. 0.1 signifie qu'il y a 1 insertion/deletion sur 10 inversions. 
 T0= est la température pour l'algorithme de Montecarlo.
-idl= est la longueur 
+idl= est la longueur des insertions/deletions
+iter_num= est le nombre de generations du genome
+rep_num= est le nombre de repetitions d'un simulation
+
+INI_file= le nom du fichier params.ini du package TCDS.
+
+Si vous voudriez tester plusieurs paramètres vous pouvez changer la variable T0_list avec les différentes valeurs à tester.
+
 
 
 ## mise à jour du 28 novembre 
