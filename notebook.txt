@@ -1,8 +1,0 @@
-#Simulations
-
-Date=
-##Number of polymerases
-6,8,10,12,14,25,50,100
-
-
-
