@@ -2,7 +2,7 @@
 Projet Sam Mayer
 https://github.com/bilalelhoudaigui/TCDS-v2
 
-Le code simule l'évolution d'un génome en utilisant des mutations et des insertions. Le but du code est génerer un génome qui soit le mieux adapté à son environement au niveau de transcription des génes. Le génome est modifié au cours tu temps et la transcription des génes est calculé en utilisant le package TCDS-v2. La fitness cible se trouve dans le fichier 
+Le code simule l'évolution d'un génome en utilisant des mutations et des insertions. Le but du code est génerer un génome qui soit le mieux adapté à son environement au niveau de transcription des génes. Le génome est modifié au cours tu temps et la transcription des génes est calculé en utilisant le package TCDS-v2. La transcription cible des génes se trouve dans le fichier input1/environment.data. Il faut trouver une conformation des génes qui aie une transcription proche du cible. Avec ce code il est possible de tester plusieurs paramètres pour trouver la bonne conformation du génome. 
 
 # Lancer une simulation
 
