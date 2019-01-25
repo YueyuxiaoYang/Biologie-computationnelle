@@ -58,6 +58,7 @@ class Genome:
                         1.input manually might cause problem with diff prot. posi,
                         2.Also, assume that protine name = hns all the time
     '''
+
     def __init__(self):
         # each gene is a list [gene_id, start position, end positon, orientation]
         self.gene_list = []
@@ -88,14 +89,12 @@ class Genome:
            r_position = self.select_modify_position_insert()
         else:
            r_position = position
-        #print ("insert position: "+str(r_position))
         # find all genes after r_position, every gene + insert_len
         genes_to_modify = [g for g in self.gene_list if g.start > r_position]
         for g in genes_to_modify:
             g.start = g.start + insert_len
             g.end = g.end + insert_len
         
-        #genome_len + insert_len
         self.genome_len += insert_len       
         # insert also protine list
         self.prot_posi = self.modify_prot(method="insert", posi1=r_position,length=insert_len)
@@ -103,33 +102,25 @@ class Genome:
     
     def delete(self, position=None, delete_len=60):
         '''delete a sequence in the genome
-       
            Arguments:
                position (int): delete position, defaut random choose
                delete_len (int): the length of deletion, defaut=60
        '''
         if position == None:
            r_position = self.select_modify_position_delete(delete_len) 
-           #print ("delete position: "+str(r_position))
-           
         else:
            r_position = position
-        
         # find all genes after r_position, every gene - delete_len
         genes_to_modify = [g for g in self.gene_list if g.start > r_position]   
         for g in genes_to_modify:
             g.start = g.start - delete_len
             g.end = g.end - delete_len
-        
         # delete also protine list
         self.prot_posi = self.modify_prot(method="delete", posi1=r_position,length=delete_len)
-        
         self.genome_len -= delete_len
-       
-          
+         
     def select_modify_position_insert(self):
         ''' randomly select a position can be modify
-            
             Return a position in the Genome is modifible
         '''
         # identify the positions we can not touch
@@ -138,16 +129,13 @@ class Genome:
         for g in self.gene_list:
             untouchble+=range(g.start,g.end+1)
         untouchble += self.prot_posi
-        
         genome_all_posi = range(1,1+self.genome_len)
         modifible = list(set(genome_all_posi)-set(untouchble))
         r_position = np.random.choice(modifible)                
-                            
         return r_position
-        #print untouchble
+	
     def select_modify_position_delete(self,delete_len):
         ''' randomly select a position can be modify
-            
             Return a position in the Genome is modifible, 
             constrain:  
                 delete position - delete_len not in the gene
@@ -160,14 +148,13 @@ class Genome:
         # delete_posi - delete_len > prot_posi
         for p in self.prot_posi:
             untouchble += range(p,p+delete_len+1)
-        
         genome_all_posi = list(range(1+delete_len,1+self.genome_len))
         modifible = list(set(genome_all_posi)-set(untouchble))
         r_position = np.random.choice(modifible)   
         return r_position
+
     def select_modify_position_inversion(self):
         ''' randomly select a position can be modify
-            
             Return 2 positions in the Genome is modifible
         '''
         # identify the positions we can not touch
@@ -182,8 +169,7 @@ class Genome:
         return sorted(r_positions)
     
     def modify_prot(self, method,posi1,posi2=None,length=None):
-        ''' Modify the protine list
-                
+        ''' Modify the protine list 
             Arguments: 
                 method(int): insert, delete or inversion
                 posi1: insert/delete position, posi1 for inversion
@@ -210,93 +196,15 @@ class Genome:
         prot_list.sort()
         return prot_list
     
-    def inversion(self, position1= None, position2=None): 
-        '''
-            input:
-                inversion between position1 and position2
-            rebust: 1. gene_len is a constant(l=1000)
-            
-        '''
-        # Choose 2 position, position1<postiton2
-        if position1 == None or position2 == None:
-            r_position1,r_position2 = self.select_modify_position_inversion() #!!! not rubust need to change
-            #print "delete position: "+str(r_position1)   
-        else:
-            # input position1/2 is for testing the code
-            r_position1 = position1
-            r_position2 = position2
-        
-        # invert also protine list
-        # ? nothing between posi1 and posi2, ? 1 prot between posi1 and posi2 --> OK
-        self.prot_posi = self.modify_prot(method="inversion", posi1=r_position1,posi2=r_position2)
-        
-        # inversion between r_posi1 and r_posi2
-        Number_gene=0
-        start_gene=[]
-        end_gene=[]
-        name_gene=[]
-        orientation=[]
-        for g in self.gene_list:
-            if (r_position1 < g.start and r_position2> g.end) : 
-                Number_gene = Number_gene +1
-                start_gene.append(g.start)
-                end_gene.append(g.end)
-                name_gene.append(g.id)
-                orientation.append(g.orientation)
-        
-        # if Number_gene = 0, stop inversion process(nothing happens)
-        if Number_gene == 0:
-            return ("nothing changed")
-        #print ('inversion between',r_position1,r_position2)         
-        
-        # sort gene list to inversion, by its start position
-        g_list = list(zip(name_gene, start_gene, end_gene,orientation))        
-        g_list.sort(key= lambda g:g[1])
-        name_gene, start_gene, end_gene,orientation = [list(t) for t in zip(*g_list)]
-        #print(name_gene, start_gene, end_gene,orientation)                
-               
-        end_gene_i=max(end_gene)
-        dist_gene=[]
-        n=len(name_gene)#nombre de gene 
-        l=999 # taille d'un gene 
-        for i in range(1,n):
-        		dist_gene.append(start_gene[i]-end_gene[i-1])
-        	#inverser les index des nouveaux genes 
-        name_gene = name_gene[::-1]
-        dist_gene =dist_gene[::-1]
-        	#ecrire la nouvelle premiere position (start et end) 
-        start_gene[0]= r_position1 + r_position2- end_gene_i        
-        orientation[0]=  orientation[0]*(-1)
-        end_gene[0]= start_gene[0] + l*orientation[0]
-        for i in range(1,n): 
-            start_gene[i]= end_gene[i-1] + dist_gene[i-1]
-            orientation[i]=  orientation[i]*(-1)
-            end_gene[i]= start_gene[i]+l*orientation[i]    
-        # --- end inversion ----
-        
-        gene_to_modify = list(zip(name_gene, start_gene, end_gene,orientation))
-        gene_to_modify.sort(key= lambda g:g[0])
-        
-        for i,g in enumerate([gn for gn in self.gene_list if gn.id in name_gene]):
-            g.start = gene_to_modify[i][1]
-            g.end = gene_to_modify[i][2]
-            g.orientation = gene_to_modify[i][3]
-            
-        return name_gene, start_gene, end_gene , orientation
     def inversion_v2(self, posi1= None, posi2=None):
-        '''
-        '''
         if posi1 == None or posi2 == None:
-            posi1,posi2 = self.select_modify_position_inversion() #!!! not rubust need to change
+            posi1,posi2 = self.select_modify_position_inversion() 
             #print "delete position: "+str(r_position1)   
         self.prot_posi = self.modify_prot(method="inversion", posi1=posi1,posi2=posi2)
-        
         gene_l = [[g.id, g.start, g.end, g.orientation] for g in self.gene_list] # start, end and orientation
-        gene_l.sort(key=lambda x:x[1]) # sort by sstart position
-        
+        gene_l.sort(key=lambda x:x[1]) # sort by start position
         g_to_inv = [g for g in gene_l if g[1] > posi1 and g[2] < posi2]         
         g_not_inv = [g for g in gene_l if g not in g_to_inv]
-        
         id_l = [] # id list after sorting by start position
         s_e_l = [posi1,] # start and end positions
         ori_l = []
@@ -306,7 +214,6 @@ class Genome:
             s_e_l.append(x[2])
             ori_l.append(x[3])
         s_e_l.append(posi2)
-        
         # inverse id;  orientation and  position will be update later
         g_to_inv = g_to_inv[::-1]
         #invert positions
@@ -315,15 +222,11 @@ class Genome:
         g_dist = g_dist[::-1]
         g_after_inv = posi1 + np.add.accumulate(g_dist) # inversion of positions complete
         g_after_inv = g_after_inv[:-1] # delete posi2
-        
-        #print (g_after_inv)
-        
         # save start and end positions
         for i in range(len(g_to_inv)):
             g_to_inv[i][1] = g_after_inv[i*2]
             g_to_inv[i][2] = g_after_inv[i*2+1]
             g_to_inv[i][3] = g_to_inv[i][3] * (-1)
-       
         gene_l_after_inv = g_to_inv + g_not_inv
         #print(gene_l_after_inv)
         # sort gene list aftere inversion by id
@@ -334,15 +237,9 @@ class Genome:
             #print(i,g.start)
             g.end = gene_l_after_inv[i][2]
             g.orientation = gene_l_after_inv[i][3]
-        
-        
-       
-
-        
     
     def mutation(self):
-        '''Randomly choose in/del or inversion for current genome, the result is next generation
-            
+        '''Randomly choose in/del or inversion for current genome, the result is next generation 
         '''
         r = self.change_rate
         if np.random.rand(1) < r/(r+1): # in/del
@@ -355,7 +252,6 @@ class Genome:
         else: # inversion
             self.inversion_v2()
             mu = 3 #"inversion"
-        
         return mu
     
     def call_fitness(self,name=''):
@@ -421,9 +317,10 @@ for g in gene_list:
     g.display()
 '''
 
-
     
 def tousidentfile(gn1,name=''):
+	''' This function permits to write in files
+	'''
     header=["##gff-version 3","#!gff-spec-version 1.20","#!processor NCBI annotwriter",
 	"##sequence-region tousgenesidentiques 1 %d" %gn1.genome_len]
     f= open("./input"+name+"/gff.gff","w+")
@@ -451,7 +348,6 @@ def tousidentfile(gn1,name=''):
             orient="-"
             base="%s\t%s\t%s\t1.\n" %(gn1.gene_list[n].id-1, orient, gn1.gene_list[n].end)
         f2.write(base)	
-
     f2.close()
 	#for TTS.dat
     header3=["TUindex","TUorient","TTS_pos","TTS_proba_off\n"]
