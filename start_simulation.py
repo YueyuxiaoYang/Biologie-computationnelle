@@ -1,4 +1,5 @@
 import sys
+#we have to thonk to change this path
 sys.path.append('C:/Users/Lily/Documents/GitHub/Biologie-comptationnelle')
 import simulation as sim
 INI_file="params.ini"
