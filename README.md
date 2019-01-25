@@ -10,7 +10,7 @@ Le code simule l'évolution d'un génome en utilisant des mutations et des inser
 Dans le fichier test_simulation.py il faut choisir les paramètres suivants:
 Le génome initial doit avoir le format gff et il faut changer le nom du fichier dans "input Genome information".
 
-ratio= Pour espécifier le ration des insertions/deletions / inversions il faut. 0.1 signifie qu'il y a 1 insertion/deletion sur 10 inversions. 
+ratio= Pour espécifier le ration des (insertions/deletions)/inversions il faut. 0.1 signifie qu'il y a 1 insertion/deletion sur 10 inversions. 
 T0= est la température pour l'algorithme de Montecarlo.
 idl= est la longueur des insertions/deletions
 iter_num= est le nombre de générations du génome
